@@ -1,7 +1,7 @@
 <template>
     <main id="layout">
-        <Sidebar />
-        <router-view />
+        <Sidebar/>
+        <router-view/>
     </main>
 </template>
 
@@ -21,10 +21,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #layout {
     display: flex;
-    height: 100%;
-    width: 100%;
+    min-width: 100vw;
+    width: 100vw;
+    height: 100vh;
 }
 </style>
