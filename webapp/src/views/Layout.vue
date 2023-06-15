@@ -24,8 +24,7 @@ export default {
 <style lang="scss">
 #layout {
     display: flex;
-    min-width: 100vw;
-    width: 100vw;
-    height: 100vh;
+    height: 100%;
+    min-width: 100%;
 }
 </style>

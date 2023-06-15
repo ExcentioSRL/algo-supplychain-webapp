@@ -1,17 +1,18 @@
 <template>
-<main id="profile">
+<main id="requests">
+
 </main>
 </template>
 
 <script lang="ts">
-import Header from '@/components/Header.vue';
+
 export default{
-    name: "Profile",
+    name: "Requests"
 }
 </script>
 
 <style lang="scss" scoped>
-#profile{
+#requests{
   width: 85%;
   max-width: 85%;
   height: 100%;

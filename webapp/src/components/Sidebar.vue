@@ -12,6 +12,10 @@
                 <span class="material-icons">home</span>
                 <span class="text">Home</span>
             </router-link>
+            <router-link to="/requests" class="button-top">
+                <span class="material-icons">question_mark</span>
+                <span class="text">Requests</span>
+            </router-link>
             <div v-if="1 === 1"> <!-- Sostituire con una condizione di login-->
                 <router-link to="/profile" class="button-top">
                     <span class="material-icons">person</span>
@@ -55,11 +59,10 @@ aside {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    color: white;
-    width: 15%;
+    min-width: 40%;
     height: 100%;
-    background: #F1F2F6;
-    padding: 1rem;
+    background: #274268;
+    padding: 1.5rem;
     left: 0;
     //box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
     .infos{
@@ -71,14 +74,14 @@ aside {
             margin-right: 1.5rem;
         }
         h5{
-            color: black;
+            color: white;
         }
         h3{
-            color: black;
+            color: white;
         }
     }
     .menu {
-        margin: 0 -1rem;
+        margin: 2rem -1.5rem;
         .button-top {
             display: flex;
             align-items: center;
@@ -88,30 +91,23 @@ aside {
             margin-top: 2rem;
             .material-icons {
                 font-size: 2rem;
-                color: #757D8A;
+                color: white;
             }
-
             .text {
-                color: #757D8A;
+                color: white;
                 font-size: 1rem;
                 padding-left: 1rem;
             }
-
             &:hover {
                 background-color: var(--dark-alt);
-
-                .material-icons,
-                .text {
-                    color: #404D61;
+                .material-icons,.text {
+                    color: white;
                 }
             }
-
             &.router-link-exact-active {
                 background-color: var(--dark-alt);
                 border-right: 5px solid black;
-
-                .material-icons,
-                .text {
+                .material-icons,.text {
                     color: black;
                 }
             }
@@ -130,11 +126,11 @@ aside {
 
                 .material-icons {
                 font-size: 1.5rem;
-                color: #757D8A;
+                color: white;
                 }
 
                 .text {
-                    color: #757D8A;
+                    color: white;
                     font-size: 1rem;
                     padding-left: 1rem;
                 }

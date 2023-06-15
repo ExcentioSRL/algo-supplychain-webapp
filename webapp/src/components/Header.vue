@@ -1,12 +1,21 @@
 <template>
     <header>
         <h1>{{ pageName }}</h1>
-        <input type="text" placeholder="Search item"/>
+        <div class="searchBox">
+            <input class="searchInput" type="text" name="" placeholder="Search here"/>
+            <button class="searchButton" @click="searchAll">
+                <i class="material-icons">search</i>
+            </button>
+        </div>
         <div v-if="accountAddress === ''">
-            <button @click="connectWallet">Connect wallet</button>
+            <button class="connectWallet" @click="connectWallet">
+                <h4>Connect wallet</h4>
+            </button>
         </div>
         <div v-else>
-
+            <button class="connectWallet" @click="disconnectWallet">
+                <h4>Disconnect wallet</h4>
+            </button>
         </div>
     </header>
 </template>
@@ -50,7 +59,11 @@ export default{
                     this.accountAddress = accounts[0];
                 })
                 .catch((e) => console.log(e));
-        }
+        },
+        disconnectWallet(){
+            //peraWallet.disconnect().then()
+        },
+        searchAll(){}
     }
 }
 </script>
@@ -58,31 +71,76 @@ export default{
 <style lang="scss" scoped>
 header{
     display: flex;
-    min-width: 100vw;
+    min-width: 100%;
     padding: 2rem;
-    width: 100vw;
+    width: 100%;
+    height: 20%;
     h1{
         color: black;
+        font-size: 40px;
         font-weight: 700;
     }
-    input{
+    .searchBox {
         position: absolute;
-        right: 35%;
-        border-radius: 0.5rem;
-        height: 3rem;
-        font-size: 2rem;
-        &::placeholder{
-            font-size: 2rem;
+        left: 45%;
+        margin-top: 0.5rem;
+        background-color: #274268;
+        width: 20%;
+        height: 6%;
+        border-radius: 40px;
+        padding: 10px;
+        .searchButton {
+            color: white;
+            float: right;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #274268;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:hover{
+                background: white;
+                color : #2f3640;
+            }
+        }
+        .searchInput {
+            border:none;
+            background: none;
+            outline:none;
+            width: 20%;
+            float:left;
+            padding: 0;
+            color: white;
+            font-size: 16px;
+            line-height: 40px;
+            width: 85%;
+            padding-left: 1rem;
+            &::placeholder{
+                color: white;
+            }
         }
     }
-    button{
+    .connectWallet{
+        font-weight: 600;
         padding: 1rem;
         position: absolute;
-        right: 5rem;
-        color: darkblue;
+        right: 4.5%;
         height: 3rem;
-        border: 1px solid black;
-        border-radius: 1rem;
+        width: 10rem;
+        border: 2px solid #274268;
+        border-radius: 0.75rem;
+        margin-top: 0.75rem;
+        h4{
+            color: #274268;
+            font-weight: bold;
+        }
+        &:hover{
+            background-color: #274268;
+        }
+        &:hover > h4{
+            color: white;
+        }
     }
 }
 </style>

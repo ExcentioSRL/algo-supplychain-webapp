@@ -25,7 +25,6 @@ html{
   body{
     background-color: white;//rgba(0, 0, 0, 0.06);
     #app{
-      min-width: 100vw;
       width: 100vw;
       height: 100vh;
       padding: 0;
