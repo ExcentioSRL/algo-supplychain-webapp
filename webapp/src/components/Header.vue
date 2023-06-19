@@ -84,7 +84,7 @@ header{
         position: absolute;
         left: 45%;
         margin-top: 0.5rem;
-        background-color: #274268;
+        background-color: #3b5998;
         width: 20%;
         height: 6%;
         border-radius: 40px;
@@ -95,7 +95,7 @@ header{
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #274268;
+            background-color: #3b5998;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -128,7 +128,7 @@ header{
         right: 4.5%;
         height: 3rem;
         width: 10rem;
-        border: 2px solid #274268;
+        border: 2px solid #3b5998;
         border-radius: 0.75rem;
         margin-top: 0.75rem;
         h4{
@@ -136,7 +136,7 @@ header{
             font-weight: bold;
         }
         &:hover{
-            background-color: #274268;
+            background-color: #3b5998;
         }
         &:hover > h4{
             color: white;

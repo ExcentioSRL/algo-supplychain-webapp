@@ -12,10 +12,6 @@
                 <span class="material-icons">home</span>
                 <span class="text">Home</span>
             </router-link>
-            <router-link to="/requests" class="button-top">
-                <span class="material-icons">question_mark</span>
-                <span class="text">Requests</span>
-            </router-link>
             <div v-if="1 === 1"> <!-- Sostituire con una condizione di login-->
                 <router-link to="/profile" class="button-top">
                     <span class="material-icons">person</span>
@@ -61,7 +57,7 @@ aside {
     overflow: hidden;
     min-width: 40%;
     height: 100%;
-    background: #274268;
+    background: #3b5998;
     padding: 1.5rem;
     left: 0;
     //box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
