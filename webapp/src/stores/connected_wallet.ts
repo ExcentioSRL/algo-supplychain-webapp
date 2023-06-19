@@ -1,11 +1,5 @@
-import { defineStore } from 'pinia'
+import { reactive } from "vue";
 
-
-export const useConnectedWallet = defineStore('wallet', {
-    state: () => ({ wallet: '' }),
-    actions: {
-        setWallet(new_value : string) {
-            this.wallet = new_value
-        },
-    },
+export const store = reactive({
+    wallet: ''
 })

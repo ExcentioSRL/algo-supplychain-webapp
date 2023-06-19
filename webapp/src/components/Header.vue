@@ -7,7 +7,7 @@
                 <i class="material-icons">search</i>
             </button>
         </div>
-        <div v-if="accountAddress === ''">
+        <div v-if="store.wallet === ''">
             <button class="connectWallet" @click="connectWallet">
                 <h4>Connect wallet</h4>
             </button>
@@ -22,8 +22,7 @@
 
 <script lang="ts">
 import { PeraWalletConnect } from "@perawallet/connect";
-import {useConnectedWallet} from "@/stores/connected_wallet";
-const store = useConnectedWallet()
+import {store} from "@/stores/connected_wallet";
 const peraWallet = new PeraWalletConnect();
 export default{
     name:'Header',
@@ -32,7 +31,7 @@ export default{
     },
     data(){
         return{
-            accountAddress: store.wallet
+            store
         }
     },
     mounted() {
@@ -41,8 +40,7 @@ export default{
             .then((accounts) => {
                 peraWallet.connector?.on("disconnect", this.disconnectWallet);
                 if (accounts.length) {
-                    this.accountAddress = accounts[0];
-                    store.setWallet(this.accountAddress);
+                    this.store.wallet = accounts[0]
                 }
             })
             .catch((error) => {
@@ -50,6 +48,7 @@ export default{
                     console.log(error);
                 }
             });
+            console.log(store.wallet)
     },
     methods: {
         connectWallet() {
@@ -57,16 +56,12 @@ export default{
                 .connect()
                 .then((accounts) => {
                     peraWallet.connector?.on("disconnect", this.disconnectWallet);
-
-                    this.accountAddress = accounts[0];
-                    store.setWallet(this.accountAddress);
-
+                    this.store.wallet = accounts[0]
                 })
                 .catch((e) => console.log(e));
         },
         disconnectWallet(){
-            this.accountAddress = ''
-            store.setWallet(this.accountAddress)
+            this.store.wallet = ''
             //peraWallet.disconnect().then()
         },
         searchAll(){}
