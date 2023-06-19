@@ -22,7 +22,8 @@
 
 <script lang="ts">
 import { PeraWalletConnect } from "@perawallet/connect";
-
+import {useConnectedWallet} from "@/stores/connected_wallet";
+const store = useConnectedWallet()
 const peraWallet = new PeraWalletConnect();
 export default{
     name:'Header',
@@ -31,7 +32,7 @@ export default{
     },
     data(){
         return{
-            accountAddress: ''
+            accountAddress: store.wallet
         }
     },
     mounted() {
@@ -41,6 +42,7 @@ export default{
                 peraWallet.connector?.on("disconnect", this.disconnectWallet);
                 if (accounts.length) {
                     this.accountAddress = accounts[0];
+                    store.setWallet(this.accountAddress);
                 }
             })
             .catch((error) => {
@@ -57,10 +59,14 @@ export default{
                     peraWallet.connector?.on("disconnect", this.disconnectWallet);
 
                     this.accountAddress = accounts[0];
+                    store.setWallet(this.accountAddress);
+
                 })
                 .catch((e) => console.log(e));
         },
         disconnectWallet(){
+            this.accountAddress = ''
+            store.setWallet(this.accountAddress)
             //peraWallet.disconnect().then()
         },
         searchAll(){}

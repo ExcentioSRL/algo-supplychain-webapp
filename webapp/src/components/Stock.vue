@@ -5,7 +5,7 @@
     <h4 class="producer">{{ stock?.producer }}</h4>
     <h4 class="status">{{ stock?.status }}</h4>
     <h4 class="requester">{{ stock?.requester }}</h4>
-    <button v-if="stock.status === requested_by" @click="approveRequest(stock)">Approve request</button>
+    <button v-if="stock.status === requested_by" @click="approveRequest(stock)">Handle request</button>
     <button v-else @click="generateQRCode">Generate QR-Code</button>
 </div>
 </template>

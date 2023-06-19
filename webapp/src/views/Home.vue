@@ -44,7 +44,7 @@ export default{
       }else if(stock.status === Status.requested){
         return new StockStyle('red','grey','default')
       }else{
-        return new StockStyle('#0CA6F5','green', 'pointer')
+        return new StockStyle('#0CA6F5','#F9A603', 'pointer')
       }
       
     },
@@ -90,27 +90,19 @@ export default{
       return 0;
     },
     compareRequesters(a: StockClass, b: StockClass) : number{
-      if (a.status < b.status) {
+      if (a.requester !== undefined && b.requester === undefined) {
         return -1;
       }
-      if (a.status > b.status) {
+      if (a.requester === undefined && b.requester !== undefined) {
         return 1;
       }
-
-      if(a.requester === undefined || b.requester === undefined){
-        return 1;
-      }
-      if (a.requester! < b.requester!) {
-        return 1;
-      }
-      if (a.requester! > b.requester!) {
-        return -1;
-      }
-      if (a.uuid < b.uuid) {
-        return -1;
-      }
-      if (a.uuid > b.uuid) {
-        return 1;
+      if (a.requester !== undefined && b.requester !== undefined) {
+        if (a.requester < b.requester) {
+          return -1;
+        }
+        if (a.requester > b.requester) {
+          return 1;
+        }
       }
       return 0;
     },
@@ -118,14 +110,22 @@ export default{
       if(whichCliked === this.whichSort){
         if(whichCliked === "uuid"){
           this.changeArrowIcon(0)
+          this.stocks.reverse()
         }else if(whichCliked === "producer"){
           this.changeArrowIcon(1)
+          this.stocks.reverse()
         }else if(whichCliked === "status"){
           this.changeArrowIcon(2)
+          this.stocks.reverse()
         }else{
           this.changeArrowIcon(3)
+          let stocks1 : StockClass[];
+          let stock2 : StockClass[];
+          stocks1 = this.stocks.filter((stock) => stock.requester !== undefined);
+          stocks1.reverse();
+          stock2 = this.stocks.filter((stock) => stock.requester === undefined);
+          this.stocks = stocks1.concat(stock2); 
         }
-        this.stocks.reverse();
       }else{
         if(whichCliked === "uuid"){
           this.stocks.sort(this.compareUuid);
@@ -144,7 +144,6 @@ export default{
           this.changeArrowIcon(2)
         }else{
           this.stocks.sort(this.compareRequesters);
-          this.stocks.reverse();
           this.whichSort = whichCliked;
           this.changeArrowIcon(3)
         }
@@ -175,7 +174,7 @@ export default{
       ],
       icon: ["arrow_drop_up","arrow_drop_up","arrow_drop_up","arrow_drop_up"],
       whichSort: "",
-      key_stock : 0 //needed to force the update of the CSS of stock
+      key_stock : 0 //needed to force the update of the CSS in Stock.vue
     }
   }
 }
@@ -228,9 +227,6 @@ export default{
       flex-direction: column;
       border-radius: 0.5rem;
       overflow: hidden;
-      .stocks{
-        //width: 150%;
-      }
   }
 }
 </style>

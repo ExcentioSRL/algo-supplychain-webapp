@@ -12,6 +12,7 @@
                 <span class="material-icons">home</span>
                 <span class="text">Home</span>
             </router-link>
+
             <div v-if="1 === 1"> <!-- Sostituire con una condizione di login-->
                 <router-link to="/profile" class="button-top">
                     <span class="material-icons">person</span>
@@ -135,7 +136,7 @@ aside {
 
                   .material-icons,
                   .text {
-                      color: #404D61;
+                      color: white;
                   }
                 }
             }
