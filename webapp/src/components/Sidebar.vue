@@ -26,11 +26,11 @@
                 </router-link>
             </div>
             <div class="bottom-part">
-                <router-link to="/" class="button-bottom"> <!-- cambiare il link -->
+                <router-link to="/home" class="button-bottom" > <!-- cambiare il link -->
                     <span class="material-icons">anchor</span>
                     <span class="text">Support</span>
                 </router-link>
-                <router-link to="/" class="button-bottom"> <!-- cambiare il link -->
+                <router-link to="/" class="button-bottom" @click="logout"> 
                     <span class="material-icons">power_settings_new</span>
                     <span class="text">Logout</span>
                 </router-link>
@@ -40,11 +40,17 @@
 </template>
 
 <script lang="ts">
+import {store} from "@/stores/connected_wallet"
 export default{
     name:'Sidebar',
     data(){
         return{
-            
+            store
+        }
+    },
+    methods:{
+        logout(){
+            store.wallet = ""
         }
     }
 }

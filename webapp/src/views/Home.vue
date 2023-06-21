@@ -18,10 +18,18 @@
       <h2>Requester</h2>
       <span class="material-icons">{{ icon[3] }}</span>
       </button>
+      <div class="listChooser">
+        <input type="checkbox" id="stocks"  v-model="isSelected[0]" @change="changeShowedList">
+        <label for="stocks">Your Stocks</label>
+        <input type="checkbox" id="selfRequests" v-model="isSelected[1]" @change="changeShowedList">
+        <label for="selfRequests">Your Requests</label>
+        <input type="checkbox" id="othersRequests" v-model="isSelected[2]" @change="changeShowedList">
+        <label for="othersRequests">Others Requests</label>
+      </div>
   </div>
   <div class="allStocks">
-    <div class="stocks" v-for="stock in stocks">
-       <Stock :stock=stock :odd=isElementOdd(stocks,stock) :styling="createStockStyle(stock)" :key="key_stock" @approveRequest="removeStockFromStocks(stock)"/>
+    <div class="stocks" v-for="stock in showedStocksList">
+       <Stock :stock=stock :odd=isElementOdd(showedStocksList,stock) :styling="createStockStyle(stock)" :key="key_stock" @approveRequest="removeStockFromStocks(stock)"/>
     </div>
   </div>
 </main>
@@ -35,6 +43,21 @@ export default{
   name:"Home",
   components: {Header, Stock},
   methods:{
+    changeShowedList(){
+      let newList : StockClass[];
+      newList = [];
+      if(this.isSelected[0] === true){
+        newList = newList.concat(this.savedStocksList.filter((stock) => stock.status === Status.owned));
+      }
+      if(this.isSelected[1] === true){
+        newList = newList.concat(this.savedStocksList.filter((stock) => stock.status === Status.requested));
+      }
+      if(this.isSelected[2] === true){
+        newList = newList.concat(this.savedStocksList.filter((stock) => stock.status === Status.requested_by));
+      }
+      this.showedStocksList = newList
+      this.key_stock += 1;
+    },
     isElementOdd(stocks : StockClass[], stock: StockClass) : boolean{
       return stocks.indexOf(stock) % 2 === 0;
     },
@@ -110,40 +133,40 @@ export default{
       if(whichCliked === this.whichSort){
         if(whichCliked === "uuid"){
           this.changeArrowIcon(0)
-          this.stocks.reverse()
+          this.savedStocksList.reverse()
         }else if(whichCliked === "producer"){
           this.changeArrowIcon(1)
-          this.stocks.reverse()
+          this.savedStocksList.reverse()
         }else if(whichCliked === "status"){
           this.changeArrowIcon(2)
-          this.stocks.reverse()
+          this.savedStocksList.reverse()
         }else{
           this.changeArrowIcon(3)
           let stocks1 : StockClass[];
           let stock2 : StockClass[];
-          stocks1 = this.stocks.filter((stock) => stock.requester !== undefined);
+          stocks1 = this.savedStocksList.filter((stock) => stock.requester !== undefined);
           stocks1.reverse();
-          stock2 = this.stocks.filter((stock) => stock.requester === undefined);
-          this.stocks = stocks1.concat(stock2); 
+          stock2 = this.savedStocksList.filter((stock) => stock.requester === undefined);
+          this.savedStocksList = stocks1.concat(stock2); 
         }
       }else{
         if(whichCliked === "uuid"){
-          this.stocks.sort(this.compareUuid);
-          this.stocks.reverse();
+          this.savedStocksList.sort(this.compareUuid);
+          this.savedStocksList.reverse();
           this.whichSort = whichCliked;
           this.changeArrowIcon(0)
         }else if(whichCliked === "producer"){
-          this.stocks.sort(this.compareName);
-          this.stocks.reverse();
+          this.savedStocksList.sort(this.compareName);
+          this.savedStocksList.reverse();
           this.whichSort = whichCliked;
           this.changeArrowIcon(1)
         }else if(whichCliked === "status"){
-          this.stocks.sort(this.compareStatus);
-          this.stocks.reverse();
+          this.savedStocksList.sort(this.compareStatus);
+          this.savedStocksList.reverse();
           this.whichSort = whichCliked;
           this.changeArrowIcon(2)
         }else{
-          this.stocks.sort(this.compareRequesters);
+          this.savedStocksList.sort(this.compareRequesters);
           this.whichSort = whichCliked;
           this.changeArrowIcon(3)
         }
@@ -158,13 +181,14 @@ export default{
       }
     },
     removeStockFromStocks(stock: StockClass){
-      this.stocks.splice(this.stocks.indexOf(stock),1);
+      this.savedStocksList.splice(this.savedStocksList.indexOf(stock),1);
       this.key_stock += 1;
     }
   },
   data(){
     return {
-      stocks: [
+      showedStocksList: [new StockClass(0,"", Status.owned)],
+      savedStocksList: [
         new StockClass(1,"Azienda1 S.r.l", Status.owned),
         new StockClass(982, "Azienda8 S.r.l", Status.requested_by, "Azienda3 S.r.l"),
         new StockClass(33, "Azienda5 S.r.l", Status.requested),
@@ -174,9 +198,13 @@ export default{
       ],
       icon: ["arrow_drop_up","arrow_drop_up","arrow_drop_up","arrow_drop_up"],
       whichSort: "",
-      key_stock : 0 //needed to force the update of the CSS in Stock.vue
+      key_stock : 0, //needed to force the update of the CSS in Stock.vue,
+      isSelected: [true,true,true]
     }
-  }
+  },
+  beforeMount() {
+      this.showedStocksList = this.savedStocksList;
+  },
 }
 </script>
 
@@ -230,6 +258,21 @@ export default{
       left: 70%;
       @media(max-width:1450px){
         left: 75%;
+      }
+    }
+
+    .listChooser{
+      position: absolute;
+      right: 1%;
+      align-items: center ;
+      @media(max-width: 1450px){
+        display: flex;
+        flex-direction: column;
+        top: 12%;
+      }
+      label{
+        padding-right: 1rem;
+        color: black;
       }
     }
   }
