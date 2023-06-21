@@ -1,6 +1,5 @@
 <template>
     <header>
-        <h1>{{ pageName }}</h1>
         <div class="searchBox">
             <input class="searchInput" type="text" name="" placeholder="Search here"/>
             <button class="searchButton" @click="searchAll">
@@ -26,9 +25,6 @@ import {store} from "@/stores/connected_wallet";
 const peraWallet = new PeraWalletConnect();
 export default{
     name:'Header',
-    props: {
-        pageName: String
-    },
     data(){
         return{
             store
@@ -76,6 +72,9 @@ header{
     padding: 2rem;
     width: 100%;
     height: 20%;
+    @media(max-width: 1450px){
+        width: 60%;
+    }
     h1{
         color: black;
         font-size: 40px;
@@ -88,13 +87,13 @@ header{
         background-color: #3b5998;
         width: 20%;
         height: 6%;
-        border-radius: 40px;
-        padding: 10px;
+        border-radius: 1.5rem;
+        padding: 0.5rem;
         .searchButton {
             color: white;
             float: right;
-            width: 40px;
-            height: 40px;
+            width: fit-content;
+            padding: 2.5%;
             border-radius: 50%;
             background-color: #3b5998;
             display: flex;
@@ -102,14 +101,16 @@ header{
             align-items: center;
             &:hover{
                 background: white;
-                color : #2f3640;
+                color : #3b5998;
+            }
+            @media(max-width:1300px){
+                
             }
         }
         .searchInput {
             border:none;
             background: none;
             outline:none;
-            width: 20%;
             float:left;
             padding: 0;
             color: white;

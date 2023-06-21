@@ -191,24 +191,36 @@ export default{
     display: flex;
     flex-direction: row;
     width: 232%;
+    @media(max-width: 1450px) {
+      width: 100%;
+    }
     height: 5%;
     .sortID{
       display: flex;
       flex-direction: row;
       position: absolute;
       left: 19.5%;
+      @media(max-width:1450px){
+        left: 25%;
+       }
     }
     .sortName{
       display: flex;
       flex-direction: row;
       position: absolute;
       left: 35%;
+      @media(max-width:1450px){
+        left: 40%;
+      }
     }
     .sortStatus{
       display: flex;
       flex-direction: row;
       position: absolute;
       left: 55%;
+      @media(max-width:1450px){
+        left: 60%;
+      }
     }
 
     .sortRequester{
@@ -216,6 +228,9 @@ export default{
       flex-direction: row;
       position: absolute;
       left: 70%;
+      @media(max-width:1450px){
+        left: 75%;
+      }
     }
   }
   .allStocks{
@@ -227,6 +242,10 @@ export default{
       flex-direction: column;
       border-radius: 0.5rem;
       overflow: hidden;
+      @media(max-width: 1450px) {
+      width: 180%;
+      margin-left: 1rem;
+    }
   }
 }
 </style>

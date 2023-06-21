@@ -61,11 +61,18 @@ aside {
     background: #3b5998;
     padding: 1.5rem;
     left: 0;
+    @media(max-width: 1024px){
+        width: 10rem;
+    }
     //box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
     .infos{
         display: flex;
         align-items: center;
         margin-top: 1.5rem;
+        @media(max-width: 1024px){
+            width: 10rem;
+
+        }
         img{
             color: black;
             margin-right: 1.5rem;
@@ -79,6 +86,10 @@ aside {
     }
     .menu {
         margin: 2rem -1.5rem;
+        @media(max-width: 1024px){
+            width: 10%;
+            
+        }
         .button-top {
             display: flex;
             align-items: center;
@@ -110,7 +121,7 @@ aside {
             }
         }
         .bottom-part{
-            position: fixed;
+            position: absolute;
             bottom: 3rem;
             padding-left: 1.5rem;
             .button-bottom{

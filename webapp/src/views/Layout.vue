@@ -26,5 +26,8 @@ export default {
     display: flex;
     height: 100%;
     min-width: 100%;
+    @media(max-width: 1450px){
+        min-width: fit-content;
+    }
 }
 </style>

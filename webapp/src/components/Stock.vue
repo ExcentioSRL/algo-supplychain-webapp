@@ -79,16 +79,29 @@ export default{
     }
     .uuid{
        left: 20%; 
+       @media(max-width:1450px){
+          left: 25%;
+       }
+
     }
     .producer{
         left: 35%;
+        @media(max-width:1450px){
+          left: 40%;
+        }
     }
     .status{
         color: v-bind(color_writing);
         left: 55%;
+        @media(max-width:1450px){
+          left: 60%;
+        }
     }
     .requester{
         left: 70%;
+        @media(max-width:1450px){
+          left: 75%;
+        }
     }
 
     button{
@@ -96,9 +109,15 @@ export default{
     color: white;
     border-radius: 5px;
     padding: 0.75rem;
+    width: 10rem;
     position: absolute;
-    right: 10%;
+    left: 86%;
     cursor: v-bind(clickable_button);
+    @media(min-width: 1150px) and (max-width: 1450px){
+        left: 90%;
+    }
+    @media(max-width: 1150px){
+    }
     }
 }
 </style>
