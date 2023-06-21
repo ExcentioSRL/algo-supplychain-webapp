@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="searchBox">
-            <input class="searchInput" type="text" name="" placeholder="Search here"/>
+            <input class="searchInput" type="text" name="" placeholder="Search a stock or a user"/>
             <button class="searchButton" @click="searchAll">
                 <i class="material-icons">search</i>
             </button>
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { PeraWalletConnect } from "@perawallet/connect";
-import {store} from "@/stores/connected_wallet";
+import {store} from "@/stores/store";
 const peraWallet = new PeraWalletConnect();
 export default{
     name:'Header',
@@ -60,7 +60,9 @@ export default{
             this.store.wallet = ''
             //peraWallet.disconnect().then()
         },
-        searchAll(){}
+        searchAll(){
+            
+        }
     }
 }
 </script>
@@ -119,7 +121,8 @@ header{
             width: 85%;
             padding-left: 1rem;
             &::placeholder{
-                color: white;
+                color: #bebebe;
+
             }
         }
     }

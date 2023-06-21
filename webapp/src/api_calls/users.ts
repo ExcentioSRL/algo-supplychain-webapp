@@ -5,3 +5,4 @@ export async function login(email: string, password: string) : Promise<any> {
         "http://localhost:3000/users/login?email=" + email + "&password=" + password
     )
 }
+

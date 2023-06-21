@@ -23,20 +23,24 @@
 
 <script lang="ts">
 import router from "@/router";
-import {login} from "@/api_calls/users"
+import {login} from "@/api_calls/users";
+import {store} from "@/stores/store";
 export default {
     name: "Login",
     data() {
         return {
             email: "",
             password: "",
-            response: ""
+            response: "",
+            store
         }
     },
     methods: {
         login() {
             login(this.email, this.password).then(response => {
-                router.push('layout')
+                console.log("LOGIN: " + response)
+                store.nomeAzienda = response.data
+                router.push('home')
             }).catch(reason => {
                 this.response = "Credenziali errate"
             })

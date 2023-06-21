@@ -133,40 +133,40 @@ export default{
       if(whichCliked === this.whichSort){
         if(whichCliked === "uuid"){
           this.changeArrowIcon(0)
-          this.savedStocksList.reverse()
+          this.showedStocksList.reverse()
         }else if(whichCliked === "producer"){
           this.changeArrowIcon(1)
-          this.savedStocksList.reverse()
+          this.showedStocksList.reverse()
         }else if(whichCliked === "status"){
           this.changeArrowIcon(2)
-          this.savedStocksList.reverse()
+          this.showedStocksList.reverse()
         }else{
           this.changeArrowIcon(3)
           let stocks1 : StockClass[];
           let stock2 : StockClass[];
-          stocks1 = this.savedStocksList.filter((stock) => stock.requester !== undefined);
+          stocks1 = this.showedStocksList.filter((stock) => stock.requester !== undefined);
           stocks1.reverse();
-          stock2 = this.savedStocksList.filter((stock) => stock.requester === undefined);
-          this.savedStocksList = stocks1.concat(stock2); 
+          stock2 = this.showedStocksList.filter((stock) => stock.requester === undefined);
+          this.showedStocksList = stocks1.concat(stock2); 
         }
       }else{
         if(whichCliked === "uuid"){
-          this.savedStocksList.sort(this.compareUuid);
-          this.savedStocksList.reverse();
+          this.showedStocksList.sort(this.compareUuid);
+          this.showedStocksList.reverse();
           this.whichSort = whichCliked;
           this.changeArrowIcon(0)
         }else if(whichCliked === "producer"){
-          this.savedStocksList.sort(this.compareName);
-          this.savedStocksList.reverse();
+          this.showedStocksList.sort(this.compareName);
+          this.showedStocksList.reverse();
           this.whichSort = whichCliked;
           this.changeArrowIcon(1)
         }else if(whichCliked === "status"){
-          this.savedStocksList.sort(this.compareStatus);
-          this.savedStocksList.reverse();
+          this.showedStocksList.sort(this.compareStatus);
+          this.showedStocksList.reverse();
           this.whichSort = whichCliked;
           this.changeArrowIcon(2)
         }else{
-          this.savedStocksList.sort(this.compareRequesters);
+          this.showedStocksList.sort(this.compareRequesters);
           this.whichSort = whichCliked;
           this.changeArrowIcon(3)
         }

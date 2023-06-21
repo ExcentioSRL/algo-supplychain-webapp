@@ -4,7 +4,7 @@
             <img src="" alt="image" />
             <div>
                 <h5>Welcome back,</h5>
-                <h3>Prova s.r.l</h3>
+                <h3>{{store.nomeAzienda}}</h3>
             </div>
         </div>
         <div class="menu">
@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import {store} from "@/stores/connected_wallet"
+import {store} from "@/stores/store"
 export default{
     name:'Sidebar',
     data(){
