@@ -1,5 +1,8 @@
 <template>
     <header>
+        <button class="createStock" @click="createStock">
+            <h4>Create Stock</h4>
+        </button>
         <div class="searchBox">
             <input class="searchInput" type="text" name="" placeholder="Search a stock or a user"/>
             <button class="searchButton" @click="searchAll">
@@ -62,6 +65,9 @@ export default{
         },
         searchAll(){
             
+        },
+        createStock(){
+
         }
     }
 }
@@ -76,6 +82,25 @@ header{
     height: 20%;
     @media(max-width: 1450px){
         width: 60%;
+    }
+    .createStock{
+        font-weight: 600;
+        padding: 1rem;
+        height: 3rem;
+        width: 10rem;
+        border: 2px solid #3b5998;
+        border-radius: 0.75rem;
+        margin-top: 0.85rem;
+        h4{
+            color: #274268;
+            font-weight: bold;
+        }
+        &:hover{
+            background-color: #3b5998;
+        }
+        &:hover > h4{
+            color: white;
+        }
     }
     h1{
         color: black;

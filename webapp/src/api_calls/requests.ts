@@ -1,21 +1,19 @@
-//crea richiesta
-//elimina richiesta
-//fetcha tutte le richieste per user
-
 import axios from 'axios';
 
 // my requests for other's stocks
 export async function getMyRequests(requester: string){
-    return await axios.get(
+    const result = await axios.get(
         'http:localhost:3000/requests/getRequestsByRequester?requester=' + requester
     )
+    return result.data;
 }
 
-//the requests for my stocks made by other people
+//the requests made by other people for my stocks
 export async function getOthersRequests(owner: string) {
-    return await axios.get(
+    const result = await axios.get(
         'http:localhost:3000/requests/getRequestsByOwner?owner=' + owner
     )
+    return result.data;
 }
 
 export async function deleteRequest(id: string){

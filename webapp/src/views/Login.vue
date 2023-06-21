@@ -38,8 +38,8 @@ export default {
     methods: {
         login() {
             login(this.email, this.password).then(response => {
-                console.log("LOGIN: " + response)
-                store.nomeAzienda = response.data
+                store.nomeAzienda = response.data.nomeAzienda
+                store.pIva = response.data.pIva
                 router.push('home')
             }).catch(reason => {
                 this.response = "Credenziali errate"

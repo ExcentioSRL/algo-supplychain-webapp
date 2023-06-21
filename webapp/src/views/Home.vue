@@ -36,8 +36,11 @@
 </template>
 
 <script lang="ts">
+import { getMyRequests, getOthersRequests } from '@/api_calls/requests';
 import Header from '@/components/Header.vue';
 import Stock from '@/components/Stock.vue';
+import { store } from '@/stores/store';
+import type { StockRequest } from '@/types/request';
 import {StockClass,Status,StockStyle} from "@/types/stock";
 export default{
   name:"Home",
@@ -183,6 +186,24 @@ export default{
     removeStockFromStocks(stock: StockClass){
       this.savedStocksList.splice(this.savedStocksList.indexOf(stock),1);
       this.key_stock += 1;
+    },
+    getAllStocks() {
+      let myStocks: StockClass[];
+      myStocks = [];
+      
+      let myRequests: StockRequest[];
+      getMyRequests(store.pIva).then(response =>{
+        myRequests = response.data
+      })
+      let othersRequests: StockRequest[];
+      getOthersRequests(store.pIva).then(response => {
+        othersRequests = response.data
+      })
+      //chiamata asincrona per le mie stock
+      //chiamata per tutte quelle stock che ho richiesto
+      //le due chiamata sopra vanno unite
+      return myStocks;
+      
     }
   },
   data(){
@@ -203,6 +224,7 @@ export default{
     }
   },
   beforeMount() {
+      //this.savedStocksList =  this.getAllStocks();
       this.showedStocksList = this.savedStocksList;
   },
 }
