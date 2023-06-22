@@ -233,44 +233,32 @@ export default{
 <style lang="scss" scoped>
 #home{
   height: 100%;
-  min-width: 100%;
+  min-width: 60%;
   display: flex;
   flex-direction: column;
   .sortButtons{
     margin-left: 2rem;
     display: flex;
     flex-direction: row;
-    width: 232%;
-    @media(max-width: 1450px) {
-      width: 100%;
-    }
+    width: 100%;
     height: 5%;
     .sortID{
       display: flex;
       flex-direction: row;
       position: absolute;
       left: 19.5%;
-      @media(max-width:1450px){
-        left: 25%;
-       }
     }
     .sortName{
       display: flex;
       flex-direction: row;
       position: absolute;
       left: 35%;
-      @media(max-width:1450px){
-        left: 40%;
-      }
     }
     .sortStatus{
       display: flex;
       flex-direction: row;
       position: absolute;
       left: 55%;
-      @media(max-width:1450px){
-        left: 60%;
-      }
     }
 
     .sortRequester{
@@ -278,9 +266,6 @@ export default{
       flex-direction: row;
       position: absolute;
       left: 70%;
-      @media(max-width:1450px){
-        left: 75%;
-      }
     }
 
     .listChooser{
@@ -290,7 +275,6 @@ export default{
       @media(max-width: 1450px){
         display: flex;
         flex-direction: column;
-        top: 12%;
       }
       label{
         padding-right: 1rem;
@@ -299,16 +283,14 @@ export default{
     }
   }
   .allStocks{
-      border: 1px solid #6e757e;
-      margin-left: 2rem;
-      height: auto;
-      width: 232%;
-      display: flex;
-      flex-direction: column;
-      border-radius: 0.5rem;
-      overflow: hidden;
-      @media(max-width: 1450px) {
-      width: 180%;
+    border: 1px solid #6e757e;
+    margin-left: 2rem;
+    width: 132%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    @media(max-width: 1450px) {
       margin-left: 1rem;
     }
   }

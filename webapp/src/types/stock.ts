@@ -16,8 +16,6 @@ export class StockClass {
         this.status = status;
         this.requester = requester;
     }
-    
-    
 }
 
 //this is class which define the style of the stock component

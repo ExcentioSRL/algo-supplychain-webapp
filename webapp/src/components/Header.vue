@@ -76,9 +76,7 @@ export default{
 <style lang="scss" scoped>
 header{
     display: flex;
-    min-width: 100%;
     padding: 2rem;
-    width: 100%;
     height: 20%;
     @media(max-width: 1450px){
         width: 60%;
@@ -112,15 +110,14 @@ header{
         left: 45%;
         margin-top: 0.5rem;
         background-color: #3b5998;
-        width: 20%;
-        height: 6%;
+        width: 22%;
         border-radius: 1.5rem;
         padding: 0.5rem;
         .searchButton {
             color: white;
             float: right;
             width: fit-content;
-            padding: 2.5%;
+            padding: 2%;
             border-radius: 50%;
             background-color: #3b5998;
             display: flex;

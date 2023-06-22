@@ -62,23 +62,18 @@ aside {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    min-width: 40%;
-    height: 100%;
+    min-width: 12%;
+    height: auto;
     background: #3b5998;
     padding: 1.5rem;
     left: 0;
-    @media(max-width: 1024px){
-        width: 10rem;
+    @media(max-width: 1450px){
+        width: 7%;
     }
-    //box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
     .infos{
         display: flex;
         align-items: center;
         margin-top: 1.5rem;
-        @media(max-width: 1024px){
-            width: 10rem;
-
-        }
         img{
             color: black;
             margin-right: 1.5rem;
@@ -128,8 +123,8 @@ aside {
         }
         .bottom-part{
             position: absolute;
-            bottom: 3rem;
-            padding-left: 1.5rem;
+            bottom: 3%;
+            padding-left: 17.5%;
             .button-bottom{
                 display: flex;
                 align-items: center;
@@ -137,7 +132,6 @@ aside {
                 padding-left: 20%;
                 height: 2rem;
                 margin-top: 2rem;
-
                 .material-icons {
                 font-size: 1.5rem;
                 color: white;

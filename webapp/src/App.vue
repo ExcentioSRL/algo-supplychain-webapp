@@ -22,11 +22,15 @@ export default{
 
 <style lang="scss">
 html{
+  width: 100%;
+  height: 100%;
   body{
+    width: 100%;
+    height: 100%;
     background-color: white;//rgba(0, 0, 0, 0.06);
     #app{
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       padding: 0;
       margin: 0;
       @media(max-width: 768px){
