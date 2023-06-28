@@ -5,20 +5,14 @@
     </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Sidebar from "@/components/Sidebar.vue";
 import router from "@/router";
+import { onMounted } from "vue";
 
-export default {
-    name: "Layout",
-    components: { Sidebar },
-    data() {
-        return {}
-    },
-    beforeCreate() {
-        router.push('/home')
-    }
-}
+onMounted(() => {
+    router.push('/home')
+})
 </script>
 
 <style lang="scss">

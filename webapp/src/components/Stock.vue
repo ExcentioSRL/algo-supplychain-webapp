@@ -5,61 +5,57 @@
     <h4 class="producer">{{ stock?.producer }}</h4>
     <h4 class="status">{{ stock?.status }}</h4>
     <h4 class="requester">{{ stock?.requester }}</h4>
-    <button v-if="stock.status === requested_by" @click="approveRequest(stock)">Handle request</button>
+    <button v-if="stock.status === Status.requested_by" @click="approveRequest(stock)">Handle request</button>
     <button v-else @click="generateQRCode">Generate QR-Code</button>
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { StockClass, Status, StockStyle} from "@/types/stock";
-export default{
-    name: "Stock",
-    emits: ['approveRequest'],
-    props: {
-        stock: {
-            type: StockClass,
-            required: true,
-        },
-        odd: {
-            type: Boolean,
-            required: true,
-        },
-        styling: {
-            type: StockStyle,
-            required: true,
-        },
-        key: {
-            type: Number,
-            required: true
-        }
-    },
-    data(){
-        return {
-            color_background: this.odd === true ? "white" : "#c9d4e2",
-            color_button : this.styling?.color_button,
-            color_writing : this.styling?.color_writing,
-            clickable_button : this.styling?.clickable_button,
 
-            requested_by : Status.requested_by
-        }
+
+
+const emit = defineEmits(['approveRequest'])
+const props = defineProps({
+    stock: {
+        type: StockClass,
+        required: true,
     },
-    methods:{
-        generateQRCode(){
-            //todo
-            if(this.stock?.status === Status.owned){
-                console.log("stock:")
-                console.log("uuid:" + this.stock?.uuid)
-                console.log("producer:" + this.stock?.producer)
-                console.log("status:" + this.stock?.status)
-            }
-        },
-        approveRequest(stock : StockClass){
-            return this.$emit('approveRequest',stock);
-            /*
-            todo: rimuove la stock dalla pagina
-            */
-        }
+    odd: {
+        type: Boolean,
+        required: true,
     },
+    styling: {
+        type: StockStyle,
+        required: true,
+    },
+    key: {
+        type: Number,
+        required: true
+    }
+})
+
+const color_background = props.odd === true ? "white" : "#c9d4e2"
+const color_button =  props.styling?.color_button
+const color_writing =  props.styling?.color_writing
+const clickable_button = props.styling?.clickable_button 
+
+
+function approveRequest(stock : StockClass){
+    return emit('approveRequest', stock);
+    /*
+    todo: rimuove la stock dalla pagina
+    */
+}
+
+function generateQRCode() {
+    //todo
+    if (props.stock?.status === Status.owned) {
+        console.log("stock:")
+        console.log("uuid:" + props.stock?.uuid)
+        console.log("producer:" + props.stock?.producer)
+        console.log("status:" + props.stock?.status)
+    }
 }
 </script>
 

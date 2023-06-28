@@ -4,7 +4,7 @@
             <img src="" alt="image" />
             <div>
                 <h5>Welcome back,</h5>
-                <h3>{{store.nomeAzienda}}</h3>
+                <h3>{{store.data.nomeAzienda}}</h3>
             </div>
         </div>
         <div class="menu">
@@ -30,7 +30,7 @@
                     <span class="material-icons">anchor</span>
                     <span class="text">Support</span>
                 </router-link>
-                <router-link to="/" class="button-bottom" @click="logout"> 
+                <router-link to="/" class="button-bottom" @click="logMeOut"> 
                     <span class="material-icons">power_settings_new</span>
                     <span class="text">Logout</span>
                 </router-link>
@@ -39,20 +39,17 @@
     </aside>
 </template>
 
-<script lang="ts">
-import {store} from "@/stores/store"
-export default{
-    name:'Sidebar',
-    data(){
-        return{
-            store
-        }
-    },
-    methods:{
-        logout(){
-            store.wallet = ""
-        }
-    }
+<script lang="ts" setup>
+import {useDataStore} from "@/stores/store"
+import {logout} from "@/api_calls/users"
+
+const store = useDataStore();
+
+async function logMeOut() {
+    store.deleteAllData()
+    logout().then(response => {
+
+    })
 }
 </script>
 

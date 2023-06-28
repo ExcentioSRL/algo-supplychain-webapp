@@ -9,7 +9,7 @@
                 <i class="material-icons">search</i>
             </button>
         </div>
-        <div v-if="store.wallet === ''">
+        <div v-if="store.data.wallet === ''">
             <button class="connectWallet" @click="connectWallet">
                 <h4>Connect wallet</h4>
             </button>
@@ -22,55 +22,51 @@
     </header>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { PeraWalletConnect } from "@perawallet/connect";
-import {store} from "@/stores/store";
+import {useDataStore} from "@/stores/store";
+import { onMounted } from "vue";
 const peraWallet = new PeraWalletConnect();
-export default{
-    name:'Header',
-    data(){
-        return{
-            store
-        }
-    },
-    mounted() {
-        peraWallet
-            .reconnectSession()
-            .then((accounts) => {
-                peraWallet.connector?.on("disconnect", this.disconnectWallet);
-                if (accounts.length) {
-                    this.store.wallet = accounts[0]
-                }
-            })
-            .catch((error) => {
-                if (error?.data?.type !== "CONNECT_MODAL_CLOSED") {
-                    console.log(error);
-                }
-            });
-            console.log(store.wallet)
-    },
-    methods: {
-        connectWallet() {
-            peraWallet
-                .connect()
-                .then((accounts) => {
-                    peraWallet.connector?.on("disconnect", this.disconnectWallet);
-                    this.store.wallet = accounts[0]
-                })
-                .catch((e) => console.log(e));
-        },
-        disconnectWallet(){
-            this.store.wallet = ''
-            //peraWallet.disconnect().then()
-        },
-        searchAll(){
-            
-        },
-        createStock(){
-
-        }
-    }
+const store = useDataStore();
+function disconnectWallet() {
+    store.changeWallet("")
+    //peraWallet.disconnect().then()
 }
+
+function connectWallet() {
+    peraWallet
+        .connect()
+        .then((accounts) => {
+            peraWallet.connector?.on("disconnect", disconnectWallet);
+            store.changeWallet(accounts[0])
+        })
+        .catch((e) => console.log(e));
+}
+
+function searchAll() {
+
+}
+
+function createStock() {
+
+}
+
+onMounted(() => {
+    peraWallet
+        .reconnectSession()
+        .then((accounts) => {
+            peraWallet.connector?.on("disconnect", disconnectWallet);
+            if (accounts.length) {
+                store.changeWallet(accounts[0])
+            }
+        })
+        .catch((error) => {
+            if (error?.data?.type !== "CONNECT_MODAL_CLOSED") {
+                console.log(error);
+            }
+        });
+    console.log(store.data.wallet)
+})
 </script>
 
 <style lang="scss" scoped>

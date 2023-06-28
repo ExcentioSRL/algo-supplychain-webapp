@@ -12,7 +12,7 @@
                     <input v-model="email" name="username" placeholder="Inserisci la tua email" required>
                     <label for="password">Password</label>
                     <input type="password" v-model="password" name="password" placeholder="Inserisci la tua password" required>
-                    <button type="submit" class="btn-login" @click="login">Login</button>
+                    <button type="submit" class="btn-login" @click="logMeIn">Login</button>
                 </form>
                 <a href="url">Non hai un account? Registrati!</a>
                 <div class="response-error">{{ response }}</div>
@@ -21,31 +21,26 @@
     </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import router from "@/router";
-import {login} from "@/api_calls/users";
-import {store} from "@/stores/store";
-export default {
-    name: "Login",
-    data() {
-        return {
-            email: "",
-            password: "",
-            response: "",
-            store
-        }
-    },
-    methods: {
-        login() {
-            login(this.email, this.password).then(response => {
-                store.nomeAzienda = response.data.nomeAzienda
-                store.pIva = response.data.pIva
-                router.push('home')
-            }).catch(reason => {
-                this.response = "Credenziali errate"
-            })
-        },
-    }
+import { login } from "@/api_calls/users";
+import { ref } from "vue";
+import { useDataStore } from "@/stores/store";
+
+
+const store = useDataStore()
+const email = ref("")
+const password = ref("")
+const response = ref("")
+
+function logMeIn(){
+    login(email.value, password.value).then(response => {
+        store.data.nomeAzienda = response.data.nomeAzienda
+        store.data.pIva = response.data.pIva
+        router.push('home')
+    }).catch(reason => {
+        response.value = "Credenziali errate"
+    })
 }
 </script>
 
@@ -56,7 +51,6 @@ export default {
     height: 100vh;
     padding-top: 15rem;
     padding-left: 23rem;
-
     .main-part {
         width: 60vw;
         height: 50vh;
@@ -113,13 +107,14 @@ export default {
 
                 label {
                     height: 15px;
-                    padding-bottom: 2rem;
+                    padding-bottom: 0.5rem;
                 }
 
                 input {
                     font-size: 20px;
                     height: 3rem;
                     width: 20rem;
+                    margin-bottom: 2rem;
                 }
 
                 .btn-login {

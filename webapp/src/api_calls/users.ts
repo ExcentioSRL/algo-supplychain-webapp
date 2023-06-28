@@ -6,3 +6,8 @@ export async function login(email: string, password: string) : Promise<any> {
     )
 }
 
+export async function logout() : Promise<any>{
+    return await axios.get(
+        "http://localhost:3000/users/logout"
+    )
+}

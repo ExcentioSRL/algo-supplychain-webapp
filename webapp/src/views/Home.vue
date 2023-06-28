@@ -35,199 +35,141 @@
 </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { getMyRequests, getOthersRequests } from '@/api_calls/requests';
 import Header from '@/components/Header.vue';
 import Stock from '@/components/Stock.vue';
-import { store } from '@/stores/store';
 import type { StockRequest } from '@/types/request';
 import {StockClass,Status,StockStyle} from "@/types/stock";
-export default{
-  name:"Home",
-  components: {Header, Stock},
-  methods:{
-    changeShowedList(){
-      let newList : StockClass[];
-      newList = [];
-      if(this.isSelected[0] === true){
-        newList = newList.concat(this.savedStocksList.filter((stock) => stock.status === Status.owned));
-      }
-      if(this.isSelected[1] === true){
-        newList = newList.concat(this.savedStocksList.filter((stock) => stock.status === Status.requested));
-      }
-      if(this.isSelected[2] === true){
-        newList = newList.concat(this.savedStocksList.filter((stock) => stock.status === Status.requested_by));
-      }
-      this.showedStocksList = newList
-      this.key_stock += 1;
-    },
-    isElementOdd(stocks : StockClass[], stock: StockClass) : boolean{
-      return stocks.indexOf(stock) % 2 === 0;
-    },
-    createStockStyle(stock: StockClass) : StockStyle{
-      if(stock.status === Status.owned){
-        return new StockStyle('blue','green','pointer')
-      }else if(stock.status === Status.requested){
-        return new StockStyle('red','grey','default')
-      }else{
-        return new StockStyle('#0CA6F5','#F9A603', 'pointer')
-      }
-      
-    },
-    compareUuid(a: StockClass, b: StockClass): number{
-      if (a.uuid < b.uuid) {
-        return -1;
-      }
-      if (a.uuid > b.uuid) {
-        return 1;
-      }
-      return 0;
-    },
-    compareName(a: StockClass, b: StockClass): number{
-      if (a.producer < b.producer) {
-        return -1;
-      }
-      if (a.producer > b.producer) {
-        return 1;
-      }
+import { onMounted, ref } from "vue";
+import {compareName, compareStatus, compareUuid, compareRequesters} from "@/utils/compare"
+import { useDataStore } from "@/stores/store"
 
-      if (a.uuid < b.uuid) {
-        return -1;
-      }
-      if (a.uuid > b.uuid) {
-        return 1;
-      }
-      return 0;
-    },
-    compareStatus(a: StockClass, b:StockClass): number{
-      if (a.status < b.status) {
-        return -1;
-      }
-      if (a.status > b.status) {
-        return 1;
-      }
+//data
+let showedStocksList = ref<StockClass[]>([new StockClass(0, "", Status.owned)])
+let savedStocksList= ref<StockClass[]>([
+  new StockClass(1, "Azienda1 S.r.l", Status.owned),
+  new StockClass(982, "Azienda8 S.r.l", Status.requested_by, "Azienda3 S.r.l"),
+  new StockClass(33, "Azienda5 S.r.l", Status.requested),
+  new StockClass(25, "Azienda1 S.r.l", Status.owned),
+  new StockClass(2, "Azienda3 S.r.l", Status.requested_by, "Azienda1 S.r.l"),
+  new StockClass(3, "Azienda2 S.r.l", Status.requested_by, "Azienda3 S.r.l")
+])
+let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
+let whichSort = ref("")
+let key_stock = ref(0)
+let isSelected = ref([true,true,true])
 
-      if (a.uuid < b.uuid) {
-        return -1;
-      }
-      if (a.uuid > b.uuid) {
-        return 1;
-      }
-      return 0;
-    },
-    compareRequesters(a: StockClass, b: StockClass) : number{
-      if (a.requester !== undefined && b.requester === undefined) {
-        return -1;
-      }
-      if (a.requester === undefined && b.requester !== undefined) {
-        return 1;
-      }
-      if (a.requester !== undefined && b.requester !== undefined) {
-        if (a.requester < b.requester) {
-          return -1;
-        }
-        if (a.requester > b.requester) {
-          return 1;
-        }
-      }
-      return 0;
-    },
-    sortStocks(whichCliked : string){
-      if(whichCliked === this.whichSort){
-        if(whichCliked === "uuid"){
-          this.changeArrowIcon(0)
-          this.showedStocksList.reverse()
-        }else if(whichCliked === "producer"){
-          this.changeArrowIcon(1)
-          this.showedStocksList.reverse()
-        }else if(whichCliked === "status"){
-          this.changeArrowIcon(2)
-          this.showedStocksList.reverse()
-        }else{
-          this.changeArrowIcon(3)
-          let stocks1 : StockClass[];
-          let stock2 : StockClass[];
-          stocks1 = this.showedStocksList.filter((stock) => stock.requester !== undefined);
-          stocks1.reverse();
-          stock2 = this.showedStocksList.filter((stock) => stock.requester === undefined);
-          this.showedStocksList = stocks1.concat(stock2); 
-        }
-      }else{
-        if(whichCliked === "uuid"){
-          this.showedStocksList.sort(this.compareUuid);
-          this.showedStocksList.reverse();
-          this.whichSort = whichCliked;
-          this.changeArrowIcon(0)
-        }else if(whichCliked === "producer"){
-          this.showedStocksList.sort(this.compareName);
-          this.showedStocksList.reverse();
-          this.whichSort = whichCliked;
-          this.changeArrowIcon(1)
-        }else if(whichCliked === "status"){
-          this.showedStocksList.sort(this.compareStatus);
-          this.showedStocksList.reverse();
-          this.whichSort = whichCliked;
-          this.changeArrowIcon(2)
-        }else{
-          this.showedStocksList.sort(this.compareRequesters);
-          this.whichSort = whichCliked;
-          this.changeArrowIcon(3)
-        }
-      }
-      this.key_stock += 1;
-    },
-    changeArrowIcon(whichIcon: number){
-      if (this.icon[whichIcon] === "arrow_drop_up") {
-        this.icon[whichIcon] = "arrow_drop_down"
-      } else {
-        this.icon[whichIcon] = "arrow_drop_up"
-      }
-    },
-    removeStockFromStocks(stock: StockClass){
-      this.savedStocksList.splice(this.savedStocksList.indexOf(stock),1);
-      this.key_stock += 1;
-    },
-    getAllStocks() {
-      let myStocks: StockClass[];
-      myStocks = [];
-      
-      let myRequests: StockRequest[];
-      getMyRequests(store.pIva).then(response =>{
-        myRequests = response.data
-      })
-      let othersRequests: StockRequest[];
-      getOthersRequests(store.pIva).then(response => {
-        othersRequests = response.data
-      })
-      //chiamata asincrona per le mie stock
-      //chiamata per tutte quelle stock che ho richiesto
-      //le due chiamata sopra vanno unite
-      return myStocks;
-      
+const store = useDataStore();
+//functions
+function sortStocks(whichCliked: string) {
+  if (whichCliked === whichSort.value) {
+    if (whichCliked === "uuid") {
+      changeArrowIcon(0)
+      showedStocksList.value.reverse()
+    } else if (whichCliked === "producer") {
+      changeArrowIcon(1)
+      showedStocksList.value.reverse()
+    } else if (whichCliked === "status") {
+      changeArrowIcon(2)
+      showedStocksList.value.reverse()
+    } else {
+      changeArrowIcon(3)
+      let stocks1: StockClass[];
+      let stock2: StockClass[];
+      stocks1 = showedStocksList.value.filter((stock) => stock.requester !== undefined);
+      stocks1.reverse();
+      stock2 = showedStocksList.value.filter((stock) => stock.requester === undefined);
+      showedStocksList.value = stocks1.concat(stock2);
     }
-  },
-  data(){
-    return {
-      showedStocksList: [new StockClass(0,"", Status.owned)],
-      savedStocksList: [
-        new StockClass(1,"Azienda1 S.r.l", Status.owned),
-        new StockClass(982, "Azienda8 S.r.l", Status.requested_by, "Azienda3 S.r.l"),
-        new StockClass(33, "Azienda5 S.r.l", Status.requested),
-        new StockClass(25, "Azienda1 S.r.l", Status.owned),
-        new StockClass(2, "Azienda3 S.r.l", Status.requested_by,"Azienda1 S.r.l"),
-        new StockClass(3, "Azienda2 S.r.l", Status.requested_by, "Azienda3 S.r.l")
-      ],
-      icon: ["arrow_drop_up","arrow_drop_up","arrow_drop_up","arrow_drop_up"],
-      whichSort: "",
-      key_stock : 0, //needed to force the update of the CSS in Stock.vue,
-      isSelected: [true,true,true]
+  } else {
+    if (whichCliked === "uuid") {
+      showedStocksList.value.sort(compareUuid);
+      showedStocksList.value.reverse();
+      changeArrowIcon(0)
+    } else if (whichCliked === "producer") {
+      showedStocksList.value.sort(compareName);
+      showedStocksList.value.reverse();
+      changeArrowIcon(1)
+    } else if (whichCliked === "status") {
+      showedStocksList.value.sort(compareStatus);
+      showedStocksList.value.reverse();
+      changeArrowIcon(2)
+    } else {
+      showedStocksList.value.sort(compareRequesters);
+      changeArrowIcon(3)
     }
-  },
-  beforeMount() {
-      //this.savedStocksList =  this.getAllStocks();
-      this.showedStocksList = this.savedStocksList;
-  },
+    whichSort.value = whichCliked;
+  }
+  key_stock.value += 1;
 }
+
+function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
+  return stocks.indexOf(stock) % 2 === 0;
+}
+
+function changeShowedList() {
+  let newList: StockClass[];
+  newList = [];
+  if (isSelected.value[0] === true) {
+    newList = newList.concat(savedStocksList.value.filter((stock) => stock.status === Status.owned));
+  }
+  if (isSelected.value[1] === true) {
+    newList = newList.concat(savedStocksList.value.filter((stock) => stock.status === Status.requested));
+  }
+  if (isSelected.value[2] === true) {
+    newList = newList.concat(savedStocksList.value.filter((stock) => stock.status === Status.requested_by));
+  }
+  showedStocksList.value = newList
+  key_stock.value += 1;
+}
+
+function changeArrowIcon(whichIcon: number) {
+  if (icon.value[whichIcon] === "arrow_drop_up") {
+    icon.value[whichIcon] = "arrow_drop_down"
+  } else {
+    icon.value[whichIcon] = "arrow_drop_up"
+  }
+}
+
+function removeStockFromStocks(stock: StockClass) {
+  savedStocksList.value.splice(savedStocksList.value.indexOf(stock), 1);
+  key_stock.value += 1;
+}
+
+function createStockStyle(stock: StockClass): StockStyle {
+  if (stock.status === Status.owned) {
+    return new StockStyle('blue', 'green', 'pointer')
+  } else if (stock.status === Status.requested) {
+    return new StockStyle('red', 'grey', 'default')
+  } else {
+    return new StockStyle('#0CA6F5', '#F9A603', 'pointer')
+  }
+}
+
+function getAllStocks(){
+  let myStocks: StockClass[];
+  myStocks = [];
+
+  let myRequests: StockRequest[];
+  getMyRequests(store.data.pIva).then(response => {
+    myRequests = response.data
+  })
+  let othersRequests: StockRequest[];
+  getOthersRequests(store.data.pIva).then(response => {
+    othersRequests = response.data
+  })
+  //chiamata asincrona per le mie stock
+  //chiamata per tutte quelle stock che ho richiesto
+  //le due chiamata sopra vanno unite
+  return myStocks;
+
+}
+
+onMounted(() => {
+  //this.savedStocksList =  this.getAllStocks();
+  showedStocksList.value = savedStocksList.value;
+})
 </script>
 
 <style lang="scss" scoped>
