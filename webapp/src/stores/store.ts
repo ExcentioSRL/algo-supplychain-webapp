@@ -1,13 +1,3 @@
-/* 
-import { reactive } from "vue";
-
-export const store = reactive({
-    wallet: '',
-    nomeAzienda: '',
-    pIva: ''
-})
-*/
-
 class userData{
     wallet: string;
     nomeAzienda: string;

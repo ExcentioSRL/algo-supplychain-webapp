@@ -3,10 +3,8 @@
 </main>
 </template>
 
-<script lang="ts">
-export default{
-    name: "Profile",
-}
+<script lang="ts" setup>
+
 </script>
 
 <style lang="scss" scoped>

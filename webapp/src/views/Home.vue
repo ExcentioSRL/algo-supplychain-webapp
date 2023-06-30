@@ -19,11 +19,11 @@
       <span class="material-icons">{{ icon[3] }}</span>
       </button>
       <div class="listChooser">
-        <input type="checkbox" id="stocks"  v-model="isSelected[0]" @change="changeShowedList">
+        <input type="checkbox" id="stocks"  v-model="isSelected[0]" @click="changeShowedList(0)">
         <label for="stocks">Your Stocks</label>
-        <input type="checkbox" id="selfRequests" v-model="isSelected[1]" @change="changeShowedList">
+        <input type="checkbox" id="selfRequests" v-model="isSelected[1]" @click="changeShowedList(1)">
         <label for="selfRequests">Your Requests</label>
-        <input type="checkbox" id="othersRequests" v-model="isSelected[2]" @change="changeShowedList">
+        <input type="checkbox" id="othersRequests" v-model="isSelected[2]" @click="changeShowedList(2)">
         <label for="othersRequests">Others Requests</label>
       </div>
   </div>
@@ -41,87 +41,91 @@ import Header from '@/components/Header.vue';
 import Stock from '@/components/Stock.vue';
 import type { StockRequest } from '@/types/request';
 import {StockClass,Status,StockStyle} from "@/types/stock";
-import { onMounted, ref } from "vue";
+import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
 import {compareName, compareStatus, compareUuid, compareRequesters} from "@/utils/compare"
 import { useDataStore } from "@/stores/store"
 
 //data
-let showedStocksList = ref<StockClass[]>([new StockClass(0, "", Status.owned)])
-let savedStocksList= ref<StockClass[]>([
+let showedStocksList = [new StockClass(0, "", Status.owned)]
+let savedStocksList= [
   new StockClass(1, "Azienda1 S.r.l", Status.owned),
   new StockClass(982, "Azienda8 S.r.l", Status.requested_by, "Azienda3 S.r.l"),
   new StockClass(33, "Azienda5 S.r.l", Status.requested),
   new StockClass(25, "Azienda1 S.r.l", Status.owned),
   new StockClass(2, "Azienda3 S.r.l", Status.requested_by, "Azienda1 S.r.l"),
   new StockClass(3, "Azienda2 S.r.l", Status.requested_by, "Azienda3 S.r.l")
-])
+]
 let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
 let whichSort = ref("")
 let key_stock = ref(0)
 let isSelected = ref([true,true,true])
-
+let interval: any = null
 const store = useDataStore();
+
+
 //functions
 function sortStocks(whichCliked: string) {
   if (whichCliked === whichSort.value) {
     if (whichCliked === "uuid") {
       changeArrowIcon(0)
-      showedStocksList.value.reverse()
+      showedStocksList.reverse()
     } else if (whichCliked === "producer") {
       changeArrowIcon(1)
-      showedStocksList.value.reverse()
+      showedStocksList.reverse()
     } else if (whichCliked === "status") {
       changeArrowIcon(2)
-      showedStocksList.value.reverse()
+      showedStocksList.reverse()
     } else {
       changeArrowIcon(3)
       let stocks1: StockClass[];
       let stock2: StockClass[];
-      stocks1 = showedStocksList.value.filter((stock) => stock.requester !== undefined);
+      stocks1 = showedStocksList.filter((stock) => stock.requester !== undefined);
       stocks1.reverse();
-      stock2 = showedStocksList.value.filter((stock) => stock.requester === undefined);
-      showedStocksList.value = stocks1.concat(stock2);
+      stock2 = showedStocksList.filter((stock) => stock.requester === undefined);
+      showedStocksList = stocks1.concat(stock2);
     }
   } else {
     if (whichCliked === "uuid") {
-      showedStocksList.value.sort(compareUuid);
-      showedStocksList.value.reverse();
+      showedStocksList.sort(compareUuid);
+      showedStocksList.reverse();
       changeArrowIcon(0)
     } else if (whichCliked === "producer") {
-      showedStocksList.value.sort(compareName);
-      showedStocksList.value.reverse();
+      showedStocksList.sort(compareName);
+      showedStocksList.reverse();
       changeArrowIcon(1)
     } else if (whichCliked === "status") {
-      showedStocksList.value.sort(compareStatus);
-      showedStocksList.value.reverse();
+      showedStocksList.sort(compareStatus);
+      showedStocksList.reverse();
       changeArrowIcon(2)
     } else {
-      showedStocksList.value.sort(compareRequesters);
+      showedStocksList.sort(compareRequesters);
       changeArrowIcon(3)
     }
     whichSort.value = whichCliked;
   }
-  key_stock.value += 1;
+  key_stock.value++;
 }
 
 function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
   return stocks.indexOf(stock) % 2 === 0;
 }
 
-function changeShowedList() {
+function changeShowedList(whichClicked : number) {
   let newList: StockClass[];
   newList = [];
+  isSelected.value[whichClicked] = !isSelected.value[whichClicked]
+  console.log("QUI0: " + isSelected.value[0])
   if (isSelected.value[0] === true) {
-    newList = newList.concat(savedStocksList.value.filter((stock) => stock.status === Status.owned));
+    newList = newList.concat(savedStocksList.filter((stock) => stock.status === Status.owned));
   }
   if (isSelected.value[1] === true) {
-    newList = newList.concat(savedStocksList.value.filter((stock) => stock.status === Status.requested));
+    newList = newList.concat(savedStocksList.filter((stock) => stock.status === Status.requested));
   }
   if (isSelected.value[2] === true) {
-    newList = newList.concat(savedStocksList.value.filter((stock) => stock.status === Status.requested_by));
+    newList = newList.concat(savedStocksList.filter((stock) => stock.status === Status.requested_by));
   }
-  showedStocksList.value = newList
-  key_stock.value += 1;
+  showedStocksList = newList
+  key_stock.value++;
 }
 
 function changeArrowIcon(whichIcon: number) {
@@ -133,8 +137,8 @@ function changeArrowIcon(whichIcon: number) {
 }
 
 function removeStockFromStocks(stock: StockClass) {
-  savedStocksList.value.splice(savedStocksList.value.indexOf(stock), 1);
-  key_stock.value += 1;
+  savedStocksList.splice(savedStocksList.indexOf(stock), 1);
+  key_stock.value++;
 }
 
 function createStockStyle(stock: StockClass): StockStyle {
@@ -166,9 +170,22 @@ function getAllStocks(){
 
 }
 
-onMounted(() => {
-  //this.savedStocksList =  this.getAllStocks();
-  showedStocksList.value = savedStocksList.value;
+
+//lifecicle hooks
+onBeforeMount(() => {
+  /*
+  interval = setInterval(() => {
+    let newStocks : StockClass[] = getAllStocks();
+    if(savedStocksList.value !== newStocks){
+      savedStocksList.value = newStocks
+      showedStocksList.value = savedStocksList.value;
+    }
+  },5000) //chiamata ogni 5 secondi
+  */
+  showedStocksList = savedStocksList
+})
+onUnmounted(() => {
+  clearInterval(interval);
 })
 </script>
 

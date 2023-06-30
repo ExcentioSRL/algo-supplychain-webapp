@@ -13,8 +13,6 @@
 <script lang="ts" setup>
 import { StockClass, Status, StockStyle} from "@/types/stock";
 
-
-
 const emit = defineEmits(['approveRequest'])
 const props = defineProps({
     stock: {
