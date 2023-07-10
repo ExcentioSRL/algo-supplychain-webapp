@@ -28,6 +28,7 @@ import {useDataStore} from "@/stores/store";
 import { onMounted } from "vue";
 const peraWallet = new PeraWalletConnect();
 const store = useDataStore();
+
 function disconnectWallet() {
     store.changeWallet("")
     //peraWallet.disconnect().then()

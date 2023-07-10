@@ -1,0 +1,113 @@
+{
+    "hints": {
+        "add_stock(uint64,address)void": {
+            "call_config": {
+                "no_op": "CALL"
+            }
+        },
+        "get_stock_by_uuid(uint64)(address,address)": {
+            "structs": {
+                "output": {
+                    "name": "Stock",
+                    "elements": [
+                        [
+                            "owner",
+                            "address"
+                        ],
+                        [
+                            "creator",
+                            "address"
+                        ]
+                    ]
+                }
+            },
+            "call_config": {
+                "no_op": "CALL"
+            }
+        },
+        "change_owner(uint64,address)void": {
+            "call_config": {
+                "no_op": "CALL"
+            }
+        }
+    },
+    "source": {
+        "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4CnR4biBOdW1BcHBBcmdzCmludGNfMCAvLyAwCj09CmJueiBtYWluX2w4CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4NDdmNmVhMTkgLy8gImFkZF9zdG9jayh1aW50NjQsYWRkcmVzcyl2b2lkIgo9PQpibnogbWFpbl9sNwp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDg3MjZmZWMyIC8vICJnZXRfc3RvY2tfYnlfdXVpZCh1aW50NjQpKGFkZHJlc3MsYWRkcmVzcykiCj09CmJueiBtYWluX2w2CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4ZTVhNTRkMWIgLy8gImNoYW5nZV9vd25lcih1aW50NjQsYWRkcmVzcyl2b2lkIgo9PQpibnogbWFpbl9sNQplcnIKbWFpbl9sNToKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBjaGFuZ2Vvd25lcmNhc3Rlcl83CmludGNfMSAvLyAxCnJldHVybgptYWluX2w2Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGdldHN0b2NrYnl1dWlkY2FzdGVyXzYKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDc6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgYWRkc3RvY2tjYXN0ZXJfNQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sODoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQpibnogbWFpbl9sMTQKdHhuIE9uQ29tcGxldGlvbgppbnRjXzEgLy8gT3B0SW4KPT0KYm56IG1haW5fbDEzCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA1IC8vIERlbGV0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2wxMgplcnIKbWFpbl9sMTI6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIGRlbGV0ZV80CmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMzoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgb3B0aW5fMAppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTQ6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydAppbnRjXzEgLy8gMQpyZXR1cm4KCi8vIG9wdF9pbgpvcHRpbl8wOgpwcm90byAwIDAKcmV0c3ViCgovLyBhZGRfc3RvY2sKYWRkc3RvY2tfMToKcHJvdG8gMiAwCmJ5dGVjXzAgLy8gIiIKaW50Y18wIC8vIDAKZHVwCmJ5dGVjXzAgLy8gIiIKZHVwCmZyYW1lX2RpZyAtMgppdG9iCmJveF9sZW4Kc3RvcmUgMQpzdG9yZSAwCmxvYWQgMQohCmFzc2VydApmcmFtZV9kaWcgLTEKZnJhbWVfZGlnIC0xCmNvbmNhdApmcmFtZV9idXJ5IDAKZnJhbWVfZGlnIC0yCml0b2IKYm94X2RlbApwb3AKZnJhbWVfZGlnIC0yCml0b2IKZnJhbWVfZGlnIDAKYm94X3B1dApyZXRzdWIKCi8vIGdldF9zdG9ja19ieV91dWlkCmdldHN0b2NrYnl1dWlkXzI6CnByb3RvIDEgMQpieXRlY18wIC8vICIiCmZyYW1lX2RpZyAtMQppdG9iCmJveF9nZXQKc3RvcmUgMwpzdG9yZSAyCmxvYWQgMwphc3NlcnQKbG9hZCAyCmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGNoYW5nZV9vd25lcgpjaGFuZ2Vvd25lcl8zOgpwcm90byAyIDAKYnl0ZWNfMCAvLyAiIgpkdXBuIDIKaW50Y18wIC8vIDAKZHVwCmJ5dGVjXzAgLy8gIiIKZHVwCmZyYW1lX2RpZyAtMgppdG9iCmJveF9sZW4Kc3RvcmUgNQpzdG9yZSA0CmxvYWQgNQphc3NlcnQKZnJhbWVfZGlnIC0yCml0b2IKYm94X2dldApzdG9yZSA3CnN0b3JlIDYKbG9hZCA3CmFzc2VydApsb2FkIDYKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmV4dHJhY3QgMzIgMApmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDAKZXh0cmFjdCAwIDMyCmZyYW1lX2J1cnkgMgpmcmFtZV9kaWcgLTEKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAyCmZyYW1lX2RpZyAxCmNvbmNhdApmcmFtZV9idXJ5IDAKZnJhbWVfZGlnIC0yCml0b2IKYm94X2RlbApwb3AKZnJhbWVfZGlnIC0yCml0b2IKZnJhbWVfZGlnIDAKYm94X3B1dApyZXRzdWIKCi8vIGRlbGV0ZQpkZWxldGVfNDoKcHJvdG8gMCAwCnR4biBTZW5kZXIKZ2xvYmFsIENyZWF0b3JBZGRyZXNzCj09Ci8vIHVuYXV0aG9yaXplZAphc3NlcnQKaW50Y18xIC8vIDEKcmV0dXJuCgovLyBhZGRfc3RvY2tfY2FzdGVyCmFkZHN0b2NrY2FzdGVyXzU6CnByb3RvIDAgMAppbnRjXzAgLy8gMApieXRlY18wIC8vICIiCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKYnRvaQpmcmFtZV9idXJ5IDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKY2FsbHN1YiBhZGRzdG9ja18xCnJldHN1YgoKLy8gZ2V0X3N0b2NrX2J5X3V1aWRfY2FzdGVyCmdldHN0b2NrYnl1dWlkY2FzdGVyXzY6CnByb3RvIDAgMApieXRlY18wIC8vICIiCmludGNfMCAvLyAwCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKYnRvaQpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDEKY2FsbHN1YiBnZXRzdG9ja2J5dXVpZF8yCmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3ViCgovLyBjaGFuZ2Vfb3duZXJfY2FzdGVyCmNoYW5nZW93bmVyY2FzdGVyXzc6CnByb3RvIDAgMAppbnRjXzAgLy8gMApieXRlY18wIC8vICIiCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKYnRvaQpmcmFtZV9idXJ5IDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKY2FsbHN1YiBjaGFuZ2Vvd25lcl8zCnJldHN1Yg==",
+        "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
+    },
+    "state": {
+        "global": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        },
+        "local": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        }
+    },
+    "schema": {
+        "global": {
+            "declared": {},
+            "reserved": {}
+        },
+        "local": {
+            "declared": {},
+            "reserved": {}
+        }
+    },
+    "contract": {
+        "name": "StockDapp",
+        "methods": [
+            {
+                "name": "add_stock",
+                "args": [
+                    {
+                        "type": "uint64",
+                        "name": "uuid"
+                    },
+                    {
+                        "type": "address",
+                        "name": "creator"
+                    }
+                ],
+                "returns": {
+                    "type": "void"
+                }
+            },
+            {
+                "name": "get_stock_by_uuid",
+                "args": [
+                    {
+                        "type": "uint64",
+                        "name": "uuid"
+                    }
+                ],
+                "returns": {
+                    "type": "(address,address)"
+                }
+            },
+            {
+                "name": "change_owner",
+                "args": [
+                    {
+                        "type": "uint64",
+                        "name": "uuid"
+                    },
+                    {
+                        "type": "address",
+                        "name": "new_owner"
+                    }
+                ],
+                "returns": {
+                    "type": "void"
+                }
+            }
+        ],
+        "networks": {}
+    },
+    "bare_call_config": {
+        "delete_application": "CALL",
+        "no_op": "CREATE",
+        "opt_in": "CALL"
+    }
+}
