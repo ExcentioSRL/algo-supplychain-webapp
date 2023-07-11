@@ -1,6 +1,6 @@
 import * as sdk from "algosdk"
 import axios from 'axios'
-import { PeraWalletConnect } from "@perawallet/connect";
+import * as pera from "@perawallet/connect";
 import { useDataStore } from "../stores/store"
 import appspec from '../dApp_schema/application.json'
 
@@ -8,16 +8,21 @@ import appspec from '../dApp_schema/application.json'
 // ------ USA WEB SOCKETS ------
 
 let algodClient : any;
-const appID = 255565680;
+const appID = 256007602;
 const contract = new sdk.ABIContract(appspec.contract)
 const addStockMethodSelector = sdk.getMethodByName(contract.methods,"add_stock").getSelector()
 const changeOwnerMethodSelector = sdk.getMethodByName(contract.methods,"change_owner").getSelector()
 
 const store = useDataStore()
-const pera = new PeraWalletConnect()
+const connectPera = new pera.PeraWalletConnect();
 
 function createAlgodClient() {
     return new sdk.Algodv2('', 'https://testnet-api.algonode.cloud', '')
+}
+
+function mapAndSignTransaction(transaction : sdk.Transaction){
+    const transactionGroup = [{ txn: transaction, signers: [store.data.wallet] }]
+    return connectPera.signTransaction([transactionGroup]);
 }
 
 async function createAndSendTransaction(methodName: Uint8Array,id: number){
@@ -36,10 +41,9 @@ async function createAndSendTransaction(methodName: Uint8Array,id: number){
             (new sdk.ABIAddressType()).encode(store.data.wallet)
         ]
     })
-    pera.signTransaction()
-    //const signedTransaction = transaction.signTxn()
 
-    //await algodClient.sendRawTransaction(signedTransaction).do()
+    const signedTransaction = mapAndSignTransaction(transaction)
+    await algodClient.sendRawTransaction(signedTransaction).do()
     await sdk.waitForConfirmation(algodClient, transaction.txID(), 4)
 }
 
@@ -53,7 +57,7 @@ export async function changeOwner(id:number){
 
 export async function getStocks() {
     return await axios.get(
-        "http://localhost:3000/stocks/getStocks&user=" + useDataStore().data.wallet
+        "http://localhost:3000/stocks/getStocks?user=" + useDataStore().data.wallet
     )
 }
 

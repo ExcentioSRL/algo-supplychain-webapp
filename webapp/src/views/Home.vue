@@ -48,11 +48,12 @@
 
 <script lang="ts" setup>
 import { getMyRequests, getOthersRequests } from '@/api_calls/requests';
+import { getStocks } from "@/api_calls/stocks";
 import Header from '@/components/Header.vue';
 import Stock from '@/components/Stock.vue';
 import type { StockRequest } from '@/types/request';
 import {StockClass,Status,StockStyle} from "@/types/stock";
-import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
+import { onBeforeMount, onUnmounted, ref } from "vue";
 import {compareName, compareStatus, compareUuid, compareRequesters} from "@/utils/compare"
 import { useDataStore } from "@/stores/store"
 
@@ -193,36 +194,23 @@ function createStockStyle(stock: StockClass): StockStyle {
 }
 
 function getAllStocks(){
-  let myStocks: StockClass[];
-  myStocks = [];
-
-  let myRequests: StockRequest[];
-  getMyRequests(store.data.pIva).then(response => {
-    myRequests = response.data
+  let myStocks: StockClass[] = [];
+  getStocks().then(response => {
+    myStocks = response.data
   })
-  let othersRequests: StockRequest[];
-  getOthersRequests(store.data.pIva).then(response => {
-    othersRequests = response.data
-  })
-  //chiamata asincrona per le mie stock
-  //chiamata per tutte quelle stock che ho richiesto
-  //le due chiamata sopra vanno unite
   return myStocks;
-
 }
 
 
 //lifecicle hooks
 onBeforeMount(() => {
-  /*
   interval = setInterval(() => {
     let newStocks : StockClass[] = getAllStocks();
-    if(savedStocksList.value !== newStocks){
-      savedStocksList.value = newStocks
-      showedStocksList.value = savedStocksList.value;
+    if(savedStocksList !== newStocks){
+      savedStocksList = newStocks
+      showedStocksList = savedStocksList;
     }
   },5000) //chiamata ogni 5 secondi
-  */
   showedStocksList = savedStocksList
 })
 onUnmounted(() => {
