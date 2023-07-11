@@ -6,7 +6,8 @@
     <h4 class="status">{{ stock?.status }}</h4>
     <h4 class="requester">{{ stock?.requester }}</h4>
     <button v-if="stock.status === Status.requested_by" @click="approveRequest(stock)">Handle request</button>
-    <button v-else @click="generateQRCode">Generate QR-Code</button>
+    <button v-else-if="stock.status === Status.owned" @click="generateQRCode">Generate QR-Code</button>
+    <button v-else @click="cancelRequest(stock)">Cancel request</button>
 </div>
 </template>
 
@@ -36,7 +37,6 @@ const props = defineProps({
 const color_background = props.odd === true ? "white" : "#c9d4e2"
 const color_button =  props.styling?.color_button
 const color_writing =  props.styling?.color_writing
-const clickable_button = props.styling?.clickable_button 
 
 
 function approveRequest(stock : StockClass){
@@ -44,6 +44,10 @@ function approveRequest(stock : StockClass){
     /*
     todo: rimuove la stock dalla pagina
     */
+}
+
+function cancelRequest(stock: StockClass){
+
 }
 
 function generateQRCode() {
@@ -114,7 +118,7 @@ function generateQRCode() {
         width: 10rem;
         position: absolute;
         left: 86%;
-        cursor: v-bind(clickable_button);
+        cursor: pointer;
     }
 }
 </style>

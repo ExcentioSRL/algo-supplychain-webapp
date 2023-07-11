@@ -23,11 +23,9 @@ export class StockClass {
 export class StockStyle{
     color_writing: string;
     color_button: string;
-    clickable_button: string;
 
-    constructor(color_writing: string, color_button: string, clickable_button: string){
+    constructor(color_writing: string, color_button: string){
         this.color_writing = color_writing;
         this.color_button = color_button;
-        this.clickable_button = clickable_button;
     }
 }

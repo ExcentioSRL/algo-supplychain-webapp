@@ -184,11 +184,11 @@ function removeStockFromStocks(stock: StockClass) {
 
 function createStockStyle(stock: StockClass): StockStyle {
   if (stock.status === Status.owned) {
-    return new StockStyle('blue', 'green', 'pointer')
+    return new StockStyle('blue', 'green')
   } else if (stock.status === Status.requested) {
-    return new StockStyle('red', 'grey', 'default')
+    return new StockStyle('red', 'red')
   } else {
-    return new StockStyle('#0CA6F5', '#F9A603', 'pointer')
+    return new StockStyle('#0CA6F5', '#F9A603')
   }
 }
 
@@ -242,21 +242,16 @@ onUnmounted(() => {
     border-bottom: 2px solid #a6b1ad;
     margin-bottom: 1.5rem;
     margin-left: 2rem;
-    width: 80%;
+    width: 75%;
     
     h3{
       margin-left: 0.5rem;
-      
       &+h3{
         background-color: #d9e4e0;
         padding: 5px;
         display: flex;
         align-items: center;
         justify-content: center;
-        //padding-top: 2px;
-        //padding-bottom: 2px;
-        //padding-left: 5px;
-        //padding-right: 5px;
         border-radius: 50%;
         width: 25px;
         height: 25px;
