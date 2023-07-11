@@ -1,9 +1,28 @@
 <template>
 <main id="home">
   <Header pageName="Homepage" />
+  <div class="filters">
+    <button class="all" @click="changeShowedList(0)">
+      <h3>All</h3>
+      <h3>{{ ntotal }}</h3>
+    </button>
+    <button class="stocks" @click="changeShowedList(1)">
+      <h3>My Stocks</h3>
+      <h3>{{ nstocks }}</h3>
+    </button>
+    <button class="my-requests" @click="changeShowedList(2)">
+      <h3>My Requests</h3>
+      <h3>{{ nmyrequests }}</h3>
+    </button>
+    <button class="others-requests" @click="changeShowedList(3)">
+      <h3>Others Requests</h3>
+      <h3>{{ nothersrequests }}</h3>
+    </button>
+  </div>
   <div class="sortButtons">
      <button class="sortID" @click="sortStocks('uuid')">
         <h2>ID</h2>
+
         <span class="material-icons">{{ icon[0] }}</span>
       </button>
       <button class="sortName" @click="sortStocks('producer')">
@@ -18,14 +37,6 @@
       <h2>Requester</h2>
       <span class="material-icons">{{ icon[3] }}</span>
       </button>
-      <div class="listChooser">
-        <input type="checkbox" id="stocks"  v-model="isSelected[0]" @click="changeShowedList(0)">
-        <label for="stocks">Your Stocks</label>
-        <input type="checkbox" id="selfRequests" v-model="isSelected[1]" @click="changeShowedList(1)">
-        <label for="selfRequests">Your Requests</label>
-        <input type="checkbox" id="othersRequests" v-model="isSelected[2]" @click="changeShowedList(2)">
-        <label for="othersRequests">Others Requests</label>
-      </div>
   </div>
   <div class="allStocks">
     <div class="stocks" v-for="stock in showedStocksList">
@@ -58,10 +69,19 @@ let savedStocksList= [
 let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
 let whichSort = ref("")
 let key_stock = ref(0)
-let isSelected = ref([true,true,true])
+let isSelected = ref([true,false,false,false])
+let ntotal = ref(savedStocksList.length)
+let nstocks = ref(savedStocksList.filter((stock) => stock.status === Status.owned).length)
+let nmyrequests = ref(savedStocksList.filter((stock) => stock.status === Status.requested).length)
+let nothersrequests = ref(savedStocksList.filter((stock) => stock.status === Status.requested_by).length)
+
 let interval: any = null
 const store = useDataStore();
 
+
+function selectFilterColor(n : number){
+  return isSelected.value[n] ? "blue" : "grey"
+}
 
 //functions
 function sortStocks(whichCliked: string) {
@@ -111,20 +131,41 @@ function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
 }
 
 function changeShowedList(whichClicked : number) {
-  let newList: StockClass[];
-  newList = [];
-  isSelected.value[whichClicked] = !isSelected.value[whichClicked]
-  console.log("QUI0: " + isSelected.value[0])
-  if (isSelected.value[0] === true) {
-    newList = newList.concat(savedStocksList.filter((stock) => stock.status === Status.owned));
+
+  switch(whichClicked){
+    case 0:{
+      showedStocksList = savedStocksList
+      isSelected.value[0] = true
+      isSelected.value[1] = false
+      isSelected.value[2] = false
+      isSelected.value[3] = false
+    }
+    break;
+    case 1:{
+      showedStocksList = savedStocksList.filter((stock) => stock.status === Status.owned)
+      isSelected.value[0] = false
+      isSelected.value[1] = true
+      isSelected.value[2] = false
+      isSelected.value[3] = false
+    }
+    break;
+    case 2:{
+      showedStocksList = savedStocksList.filter((stock) => stock.status === Status.requested)
+      isSelected.value[0] = false
+      isSelected.value[1] = false
+      isSelected.value[2] = true
+      isSelected.value[3] = false
+    }
+    break;
+    case 3:{
+      showedStocksList = savedStocksList.filter((stock) => stock.status === Status.requested_by)
+      isSelected.value[0] = false
+      isSelected.value[1] = false
+      isSelected.value[2] = false
+      isSelected.value[3] = true
+    }
+    break;
   }
-  if (isSelected.value[1] === true) {
-    newList = newList.concat(savedStocksList.filter((stock) => stock.status === Status.requested));
-  }
-  if (isSelected.value[2] === true) {
-    newList = newList.concat(savedStocksList.filter((stock) => stock.status === Status.requested_by));
-  }
-  showedStocksList = newList
   key_stock.value++;
 }
 
@@ -195,6 +236,57 @@ onUnmounted(() => {
   min-width: 60%;
   display: flex;
   flex-direction: column;
+  .filters{
+    display: flex;
+    flex-direction: row;
+    border-bottom: 2px solid #a6b1ad;
+    margin-bottom: 1.5rem;
+    margin-left: 2rem;
+    width: 80%;
+    
+    h3{
+      margin-left: 0.5rem;
+      
+      &+h3{
+        background-color: #d9e4e0;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        //padding-top: 2px;
+        //padding-bottom: 2px;
+        //padding-left: 5px;
+        //padding-right: 5px;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+      } 
+    }
+    button{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 1rem;
+      margin-left: 5rem;
+    }
+    .all{
+      margin-left: 1rem;
+      color: v-bind(selectFilterColor(0));
+     
+    }
+    .stocks{
+      color: v-bind(selectFilterColor(1));
+    }
+    .my-requests{
+      color: v-bind(selectFilterColor(2));
+    }
+    .others-requests{
+      color: v-bind(selectFilterColor(3));
+    }
+  }
+  span{
+    color: #3b5998;
+  }
   .sortButtons{
     margin-left: 2rem;
     display: flex;
