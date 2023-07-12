@@ -16,15 +16,50 @@
                 <h4>Disconnect wallet</h4>
             </button>
         </div>
+        <div class="createStockCollapsed" v-if="isExpanded === false">
+            <button @click="toogle">
+                <span class="material-icons">add</span> 
+                <h4>Create stock</h4>
+            </button>
+        </div>
+        <div class="createStockFull" v-else>
+            <input class="createInput" v-model="createStockInput" id="query" name="q" placeholder="Input stock ID">
+            <button @click="createStock">
+                <span class="material-icons">{{ iconCreateStock }}</span>
+            </button>
+        </div>
     </header>
 </template>
 
 <script lang="ts" setup>
 import { PeraWalletConnect } from "@perawallet/connect";
 import {useDataStore} from "@/stores/store";
+import { ref } from "vue";
+import { addStock } from "@/api_calls/stocks";
 
 const peraWallet = new PeraWalletConnect();
 const store = useDataStore();
+
+let isExpanded = ref(false);
+let createStockInput : string;
+let iconCreateStock = ref("arrow_right_alt")
+
+
+function toogle(){
+    isExpanded.value = !isExpanded.value
+}
+
+async function createStock() {
+    if (store.data.wallet !== "") {
+        await addStock(parseInt(createStockInput)).then(response => {
+            console.log("CIAO: " + response)
+            toogle()
+        }).catch(error => {
+            console.log("Oh no: " + error)
+        })
+    }
+
+}
 
 function disconnectWallet() {
     store.changeWallet("")
@@ -118,6 +153,7 @@ header{
         }
     }
     .connectWallet{
+        display: flex;
         font-weight: 600;
         padding: 1rem;
         position: absolute;
@@ -126,6 +162,8 @@ header{
         width: 10rem;
         border: 2px solid #3b5998;
         border-radius: 0.75rem;
+        justify-content: center;
+        align-items: center;
         h4{
             color: #274268;
             font-weight: bold;
@@ -135,6 +173,55 @@ header{
         }
         &:hover > h4{
             color: white;
+        }
+    }
+
+    .createStockCollapsed{
+        display: flex;
+        flex-direction: column;
+        background-color: #3b5998;
+        height: 25%;
+        width: 7.5%;
+        justify-content: center;
+        border-radius: 0.5rem;
+        button{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            span{
+                color: white;
+            }
+            h4{
+                color: white;
+            }
+        }
+        
+    }
+    .createStockFull{
+        display: flex;
+        justify-content: center;
+        height: 20%;
+        border: 1px solid #3b5998;
+        border-radius: 5px;
+        overflow: hidden;
+        .createInput{
+            border: 0;
+            margin-left: 5px;
+        }
+        button{
+            background-color: #3b5998;
+            border: 0;
+            border-radius: 0;
+            &:hover{
+                background-color: white;
+            }
+            &:hover > span{
+                color: #3b5998;
+            }
+            span{
+                color: white;
+                width: 2.5rem;
+            }
         }
     }
 }

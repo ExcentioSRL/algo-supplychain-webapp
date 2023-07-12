@@ -59,15 +59,15 @@ import {compareName, compareStatus, compareUuid, compareRequesters} from "@/util
 import { useDataStore } from "@/stores/store"
 import { addStock } from "@/api_calls/stocks";
 //data
-let showedStocksList : StockClass[] = []
-let savedStocksList= [
+let showedStocksList = ref<StockClass[]>([])
+let savedStocksList= ref<StockClass[]>([
   new StockClass(1, "Azienda1 S.r.l", Status.owned),
   new StockClass(982, "Azienda8 S.r.l", Status.requested_by, "Azienda3 S.r.l"),
   new StockClass(33, "Azienda5 S.r.l", Status.requested),
   new StockClass(25, "Azienda1 S.r.l", Status.owned),
   new StockClass(2, "Azienda3 S.r.l", Status.requested_by, "Azienda1 S.r.l"),
   new StockClass(3, "Azienda2 S.r.l", Status.requested_by, "Azienda3 S.r.l")
-]
+])
 let searchBarInput = ref("");
 
 let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
@@ -75,21 +75,21 @@ let whichSort = ref("")
 let key_stock = ref(0)
 let isSelected = ref([true,false,false,false])
 
-let ntotal = ref(savedStocksList.length)
-let nstocks = ref(savedStocksList.filter((stock) => stock.status === Status.owned).length)
-let nmyrequests = ref(savedStocksList.filter((stock) => stock.status === Status.requested).length)
-let nothersrequests = ref(savedStocksList.filter((stock) => stock.status === Status.requested_by).length)
+let ntotal = ref(savedStocksList.value.length)
+let nstocks = ref(savedStocksList.value.filter((stock) => stock.status === Status.owned).length)
+let nmyrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested).length)
+let nothersrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested_by).length)
 
 let interval: any = null
 const store = useDataStore();
 
 //functions
 function selectFilterColor(n : number){
-  return isSelected.value[n] ? "blue" : "grey"
+  return isSelected.value[n] ? "#3b5998" : "grey"
 }
 
 function searchMyStocks(){
-  showedStocksList = showedStocksList.filter((stock) => {
+  showedStocksList.value = showedStocksList.value.filter((stock) => {
     console.log("QUIII " + searchBarInput.value)
     if(searchBarInput.value === ""){
       return savedStocksList
@@ -104,47 +104,47 @@ function searchMyStocks(){
 }
 
 function updateNumbersInFilters(){
-  ntotal = ref(showedStocksList.length)
-  nstocks = ref(showedStocksList.filter((stock) => stock.status === Status.owned).length)
-  nmyrequests = ref(showedStocksList.filter((stock) => stock.status === Status.requested).length)
-  nothersrequests = ref(showedStocksList.filter((stock) => stock.status === Status.requested_by).length)
+  ntotal = ref(showedStocksList.value.length)
+  nstocks = ref(showedStocksList.value.filter((stock) => stock.status === Status.owned).length)
+  nmyrequests = ref(showedStocksList.value.filter((stock) => stock.status === Status.requested).length)
+  nothersrequests = ref(showedStocksList.value.filter((stock) => stock.status === Status.requested_by).length)
 }
 
 function sortStocks(whichCliked: string) {
   if (whichCliked === whichSort.value) {
     if (whichCliked === "uuid") {
       changeArrowIcon(0)
-      showedStocksList.reverse()
+      showedStocksList.value.reverse()
     } else if (whichCliked === "producer") {
       changeArrowIcon(1)
-      showedStocksList.reverse()
+      showedStocksList.value.reverse()
     } else if (whichCliked === "status") {
       changeArrowIcon(2)
-      showedStocksList.reverse()
+      showedStocksList.value.reverse()
     } else {
       changeArrowIcon(3)
       let stocks1: StockClass[];
       let stock2: StockClass[];
-      stocks1 = showedStocksList.filter((stock) => stock.requester !== undefined);
+      stocks1 = showedStocksList.value.filter((stock) => stock.requester !== undefined);
       stocks1.reverse();
-      stock2 = showedStocksList.filter((stock) => stock.requester === undefined);
-      showedStocksList = stocks1.concat(stock2);
+      stock2 = showedStocksList.value.filter((stock) => stock.requester === undefined);
+      showedStocksList.value = stocks1.concat(stock2);
     }
   } else {
     if (whichCliked === "uuid") {
-      showedStocksList.sort(compareUuid);
-      showedStocksList.reverse();
+      showedStocksList.value.sort(compareUuid);
+      showedStocksList.value.reverse();
       changeArrowIcon(0)
     } else if (whichCliked === "producer") {
-      showedStocksList.sort(compareName);
-      showedStocksList.reverse();
+      showedStocksList.value.sort(compareName);
+      showedStocksList.value.reverse();
       changeArrowIcon(1)
     } else if (whichCliked === "status") {
-      showedStocksList.sort(compareStatus);
-      showedStocksList.reverse();
+      showedStocksList.value.sort(compareStatus);
+      showedStocksList.value.reverse();
       changeArrowIcon(2)
     } else {
-      showedStocksList.sort(compareRequesters);
+      showedStocksList.value.sort(compareRequesters);
       changeArrowIcon(3)
     }
     whichSort.value = whichCliked;
@@ -160,7 +160,7 @@ function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
 function changeShowedList(whichClicked : number) {
   switch(whichClicked){
     case 0:{
-      showedStocksList = savedStocksList
+      showedStocksList.value = savedStocksList.value
       isSelected.value[0] = true
       isSelected.value[1] = false
       isSelected.value[2] = false
@@ -168,7 +168,7 @@ function changeShowedList(whichClicked : number) {
     }
     break;
     case 1:{
-      showedStocksList = savedStocksList.filter((stock) => stock.status === Status.owned)
+      showedStocksList.value = savedStocksList.value.filter((stock) => stock.status === Status.owned)
       isSelected.value[0] = false
       isSelected.value[1] = true
       isSelected.value[2] = false
@@ -176,7 +176,7 @@ function changeShowedList(whichClicked : number) {
     }
     break;
     case 2:{
-      showedStocksList = savedStocksList.filter((stock) => stock.status === Status.requested)
+      showedStocksList.value = savedStocksList.value.filter((stock) => stock.status === Status.requested)
       isSelected.value[0] = false
       isSelected.value[1] = false
       isSelected.value[2] = true
@@ -184,7 +184,7 @@ function changeShowedList(whichClicked : number) {
     }
     break;
     case 3:{
-      showedStocksList = savedStocksList.filter((stock) => stock.status === Status.requested_by)
+      showedStocksList.value = savedStocksList.value.filter((stock) => stock.status === Status.requested_by)
       isSelected.value[0] = false
       isSelected.value[1] = false
       isSelected.value[2] = false
@@ -192,7 +192,6 @@ function changeShowedList(whichClicked : number) {
     }
     break;
   }
-  updateNumbersInFilters()
   key_stock.value++;
 }
 
@@ -205,7 +204,7 @@ function changeArrowIcon(whichIcon: number) {
 }
 
 function removeStockFromStocks(stock: StockClass) {
-  savedStocksList.splice(savedStocksList.indexOf(stock), 1);
+  savedStocksList.value.splice(savedStocksList.value.indexOf(stock), 1);
   key_stock.value++;
 }
 
@@ -219,37 +218,30 @@ function createStockStyle(stock: StockClass): StockStyle {
   }
 }
 
-function getAllStocks(){
-  let myStocks: StockClass[] = savedStocksList;
+async function getAllStocks(){
+  let myStocks: StockClass[] = savedStocksList.value;
   if(store.data.wallet !== ""){
-    getStocks().then(response => {
+    await getStocks().then(response => {
       myStocks = response.data
     })
   }
+  console.log("Lunghezza tutte cose: " + myStocks.length)
   return myStocks;
 }
 
-function createStock(id: number) {
-  addStock(id).then(response => {
-    
-  }).catch(error => {
 
-  })
-}
 
 //lifecicle hooks
-onBeforeMount(() => {
-  let newStocks: StockClass[] = getAllStocks();
-  interval = setInterval(() => {
-    newStocks = getAllStocks();
-    if(savedStocksList !== newStocks){
-      savedStocksList = newStocks
-      showedStocksList = savedStocksList;
+onBeforeMount(async () => {
+  let newStocks: StockClass[] = await getAllStocks();
+  interval = setInterval(async () => {
+    newStocks = await getAllStocks();
+      savedStocksList.value = newStocks
+      showedStocksList.value = savedStocksList.value;
       updateNumbersInFilters()
       key_stock.value++;
-    }
   },5000) //chiamata ogni 5 secondi
-  showedStocksList = savedStocksList
+  showedStocksList.value = savedStocksList.value
 })
 onUnmounted(() => {
   clearInterval(interval);
