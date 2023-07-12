@@ -47,7 +47,7 @@ async function createAndSendTransaction(methodName: Uint8Array,id: number){
     await sdk.waitForConfirmation(algodClient, transaction.txID(), 4)
 }
 
-export async function createStock(id: number) {
+export async function addStock(id: number) {
     return await createAndSendTransaction(addStockMethodSelector,id)
 }
 

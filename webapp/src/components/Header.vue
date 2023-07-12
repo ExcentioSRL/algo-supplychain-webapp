@@ -1,8 +1,5 @@
 <template>
     <header>
-        <button class="createStock" @click="createStock">
-            <h4>Create Stock</h4>
-        </button>
         <div class="searchBox">
             <input class="searchInput" type="text" name="" placeholder="Search a stock or a user"/>
             <button class="searchButton" @click="searchAll">
@@ -25,7 +22,7 @@
 <script lang="ts" setup>
 import { PeraWalletConnect } from "@perawallet/connect";
 import {useDataStore} from "@/stores/store";
-import { onMounted } from "vue";
+
 const peraWallet = new PeraWalletConnect();
 const store = useDataStore();
 
@@ -48,10 +45,9 @@ function searchAll() {
 
 }
 
-function createStock() {
 
-}
 
+/* 
 onMounted(() => {
     peraWallet
         .reconnectSession()
@@ -67,7 +63,7 @@ onMounted(() => {
             }
         });
     console.log(store.data.wallet)
-})
+})*/
 </script>
 
 <style lang="scss" scoped>
@@ -75,40 +71,16 @@ header{
     display: flex;
     padding: 2rem;
     height: 20%;
+    width: 100%;
     @media(max-width: 1450px){
         width: 60%;
-    }
-    .createStock{
-        font-weight: 600;
-        padding: 1rem;
-        height: 3rem;
-        width: 10rem;
-        border: 2px solid #3b5998;
-        border-radius: 0.75rem;
-        margin-top: 0.85rem;
-        h4{
-            color: #274268;
-            font-weight: bold;
-        }
-        &:hover{
-            background-color: #3b5998;
-        }
-        &:hover > h4{
-            color: white;
-        }
-    }
-    h1{
-        color: black;
-        font-size: 40px;
-        font-weight: 700;
     }
     .searchBox {
         position: absolute;
         left: 45%;
-        margin-top: 0.5rem;
         background-color: #3b5998;
         width: 22%;
-        border-radius: 1.5rem;
+        border-radius: 0.35rem;
         padding: 0.5rem;
         .searchButton {
             color: white;
@@ -154,7 +126,6 @@ header{
         width: 10rem;
         border: 2px solid #3b5998;
         border-radius: 0.75rem;
-        margin-top: 0.75rem;
         h4{
             color: #274268;
             font-weight: bold;

@@ -22,7 +22,6 @@
   <div class="sortButtons">
      <button class="sortID" @click="sortStocks('uuid')">
         <h2>ID</h2>
-
         <span class="material-icons">{{ icon[0] }}</span>
       </button>
       <button class="sortName" @click="sortStocks('producer')">
@@ -34,10 +33,14 @@
         <span class="material-icons">{{ icon[2] }}</span>
       </button>
       <button class="sortRequester" @click="sortStocks('requester')">
-      <h2>Requester</h2>
-      <span class="material-icons">{{ icon[3] }}</span>
+        <h2>Requester</h2>
+        <span class="material-icons">{{ icon[3] }}</span>
       </button>
-  </div>
+      <form class="search"> 
+        <input class="searchInput" v-model="searchBarInput" type="search" id="query" name="q" placeholder="Search..."  @input="searchMyStocks">
+        <span class="material-icons">search</span>
+      </form>
+    </div>
   <div class="allStocks">
     <div class="stocks" v-for="stock in showedStocksList">
        <Stock :stock=stock :odd=isElementOdd(showedStocksList,stock) :styling="createStockStyle(stock)" :key="key_stock" @approveRequest="removeStockFromStocks(stock)"/>
@@ -47,18 +50,16 @@
 </template>
 
 <script lang="ts" setup>
-import { getMyRequests, getOthersRequests } from '@/api_calls/requests';
 import { getStocks } from "@/api_calls/stocks";
 import Header from '@/components/Header.vue';
 import Stock from '@/components/Stock.vue';
-import type { StockRequest } from '@/types/request';
 import {StockClass,Status,StockStyle} from "@/types/stock";
 import { onBeforeMount, onUnmounted, ref } from "vue";
 import {compareName, compareStatus, compareUuid, compareRequesters} from "@/utils/compare"
 import { useDataStore } from "@/stores/store"
-
+import { addStock } from "@/api_calls/stocks";
 //data
-let showedStocksList = [new StockClass(0, "", Status.owned)]
+let showedStocksList : StockClass[] = []
 let savedStocksList= [
   new StockClass(1, "Azienda1 S.r.l", Status.owned),
   new StockClass(982, "Azienda8 S.r.l", Status.requested_by, "Azienda3 S.r.l"),
@@ -67,10 +68,13 @@ let savedStocksList= [
   new StockClass(2, "Azienda3 S.r.l", Status.requested_by, "Azienda1 S.r.l"),
   new StockClass(3, "Azienda2 S.r.l", Status.requested_by, "Azienda3 S.r.l")
 ]
+let searchBarInput = ref("");
+
 let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
 let whichSort = ref("")
 let key_stock = ref(0)
 let isSelected = ref([true,false,false,false])
+
 let ntotal = ref(savedStocksList.length)
 let nstocks = ref(savedStocksList.filter((stock) => stock.status === Status.owned).length)
 let nmyrequests = ref(savedStocksList.filter((stock) => stock.status === Status.requested).length)
@@ -79,12 +83,33 @@ let nothersrequests = ref(savedStocksList.filter((stock) => stock.status === Sta
 let interval: any = null
 const store = useDataStore();
 
-
+//functions
 function selectFilterColor(n : number){
   return isSelected.value[n] ? "blue" : "grey"
 }
 
-//functions
+function searchMyStocks(){
+  showedStocksList = showedStocksList.filter((stock) => {
+    console.log("QUIII " + searchBarInput.value)
+    if(searchBarInput.value === ""){
+      return savedStocksList
+    }
+    return stock.uuid.toString().includes(searchBarInput.value) ||
+    stock.producer.includes(searchBarInput.value) ||
+    stock.status.includes(searchBarInput.value) ||
+    stock.requester?.includes(searchBarInput.value)
+  })
+  updateNumbersInFilters()
+  key_stock.value++;
+}
+
+function updateNumbersInFilters(){
+  ntotal = ref(showedStocksList.length)
+  nstocks = ref(showedStocksList.filter((stock) => stock.status === Status.owned).length)
+  nmyrequests = ref(showedStocksList.filter((stock) => stock.status === Status.requested).length)
+  nothersrequests = ref(showedStocksList.filter((stock) => stock.status === Status.requested_by).length)
+}
+
 function sortStocks(whichCliked: string) {
   if (whichCliked === whichSort.value) {
     if (whichCliked === "uuid") {
@@ -124,6 +149,7 @@ function sortStocks(whichCliked: string) {
     }
     whichSort.value = whichCliked;
   }
+  
   key_stock.value++;
 }
 
@@ -132,7 +158,6 @@ function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
 }
 
 function changeShowedList(whichClicked : number) {
-
   switch(whichClicked){
     case 0:{
       showedStocksList = savedStocksList
@@ -167,6 +192,7 @@ function changeShowedList(whichClicked : number) {
     }
     break;
   }
+  updateNumbersInFilters()
   key_stock.value++;
 }
 
@@ -194,21 +220,33 @@ function createStockStyle(stock: StockClass): StockStyle {
 }
 
 function getAllStocks(){
-  let myStocks: StockClass[] = [];
-  getStocks().then(response => {
-    myStocks = response.data
-  })
+  let myStocks: StockClass[] = savedStocksList;
+  if(store.data.wallet !== ""){
+    getStocks().then(response => {
+      myStocks = response.data
+    })
+  }
   return myStocks;
 }
 
+function createStock(id: number) {
+  addStock(id).then(response => {
+    
+  }).catch(error => {
+
+  })
+}
 
 //lifecicle hooks
 onBeforeMount(() => {
+  let newStocks: StockClass[] = getAllStocks();
   interval = setInterval(() => {
-    let newStocks : StockClass[] = getAllStocks();
+    newStocks = getAllStocks();
     if(savedStocksList !== newStocks){
       savedStocksList = newStocks
       showedStocksList = savedStocksList;
+      updateNumbersInFilters()
+      key_stock.value++;
     }
   },5000) //chiamata ogni 5 secondi
   showedStocksList = savedStocksList
@@ -220,17 +258,18 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 #home{
-  height: 100%;
-  min-width: 60%;
+  min-height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   .filters{
     display: flex;
     flex-direction: row;
     border-bottom: 2px solid #a6b1ad;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
     margin-left: 2rem;
-    width: 75%;
+    width: 55%;
     
     h3{
       margin-left: 0.5rem;
@@ -276,6 +315,9 @@ onUnmounted(() => {
     flex-direction: row;
     width: 100%;
     height: 5%;
+    align-items: center;
+    margin-bottom: 1rem;
+
     .sortID{
       display: flex;
       flex-direction: row;
@@ -301,25 +343,33 @@ onUnmounted(() => {
       position: absolute;
       left: 70%;
     }
-
-    .listChooser{
+    .search{
+      display: flex;
+      flex-direction: row;
       position: absolute;
-      right: 1%;
-      align-items: center ;
-      @media(max-width: 1450px){
-        display: flex;
-        flex-direction: column;
+      left: 84.7%;
+      align-items: center;
+      background-color: #3b5998;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      .searchInput{
+        border:none;
+        background: none;
+        outline:none;
+        color: white;
+        &::placeholder{
+          color: #bebebe;
+        }
       }
-      label{
-        padding-right: 1rem;
-        color: black;
+      span{
+        color: white;
       }
     }
   }
   .allStocks{
     border: 1px solid #6e757e;
     margin-left: 2rem;
-    width: 132%;
+    width: 94%;
     display: flex;
     flex-direction: column;
     border-radius: 0.5rem;
