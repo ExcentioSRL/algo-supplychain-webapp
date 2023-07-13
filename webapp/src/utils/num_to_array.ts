@@ -19,3 +19,13 @@ export function intToArrayv2(i: number): Uint8Array {
         (i & 0x000000ff) >> 0,
     )
 }
+
+
+export function Uint8ArrayToNum(arr : Uint8Array) {
+    var length = arr.length;
+
+    let buffer = Buffer.from(arr);
+    var result = buffer.readUIntBE(0, length);
+
+    return result;
+}

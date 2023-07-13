@@ -1,7 +1,7 @@
 <!-- The tuple that represent a stock in the table -->
 <template>
 <div id="stock">
-    <h4 class="uuid">{{ stock?.uuid }}</h4>
+    <h4 class="uuid">{{ stock?.id }}</h4>
     <h4 class="producer">{{ stock?.producer }}</h4>
     <h4 class="status">{{ stock?.status }}</h4>
     <h4 class="requester">{{ stock?.requester }}</h4>
@@ -54,7 +54,7 @@ function generateQRCode() {
     //todo
     if (props.stock?.status === Status.owned) {
         console.log("stock:")
-        console.log("uuid:" + props.stock?.uuid)
+        console.log("uuid:" + props.stock?.id)
         console.log("producer:" + props.stock?.producer)
         console.log("status:" + props.stock?.status)
     }

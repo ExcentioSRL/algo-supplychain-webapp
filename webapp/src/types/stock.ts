@@ -5,13 +5,13 @@ export enum Status{
 }
 
 export class StockClass {
-    uuid: number;
+    id: number;
     producer: string;
     status: Status;
     requester? : string;
 
-    constructor(uuid: number, producer: string, status: Status, requester?: string){
-        this.uuid = uuid;
+    constructor(id: number, producer: string, status: Status, requester?: string){
+        this.id = id;
         this.producer = producer;
         this.status = status;
         this.requester = requester;

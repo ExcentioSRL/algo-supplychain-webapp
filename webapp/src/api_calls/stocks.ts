@@ -42,10 +42,8 @@ async function createAndSendTransaction(methodName: sdk.ABIMethod,id: number){
     try{
         let boxName : Uint8Array = new Uint8Array(8);
         boxName!.set(intToArray(id),1);
-        console.log("BoxName: " + boxName!)
         const suggestedParams = await algodClient.getTransactionParams().do()
         const atc = new sdk.AtomicTransactionComposer();
-        console.log("TIPO: " + typeof(id))
         atc.addMethodCall({
             suggestedParams,
             sender: store.data.wallet,
