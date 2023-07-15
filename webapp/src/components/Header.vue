@@ -1,7 +1,10 @@
 <template>
     <header>
         <div class="searchBox">
-            <input class="searchInput" type="text" name="" placeholder="Search a stock or a user"/>
+            <input class="searchInput" v-model="searchInput" type="text"  name="" placeholder="Search a stock or a user"/>
+            <button v-if="searchInput !== ''" class="removeText" @click="removeSearch">
+                <i class="material-icons">cancel</i>
+            </button>
             <button class="searchButton" @click="searchAll">
                 <i class="material-icons">search</i>
             </button>
@@ -33,9 +36,15 @@
 
 <script lang="ts" setup>
 import { PeraWalletConnect } from "@perawallet/connect";
-import {useDataStore} from "@/stores/store";
+import { useDataStore } from "@/stores/store";
 import { ref } from "vue";
-import { addStock } from "@/api_calls/stocks";
+import { addStock, searchStocks } from "@/api_calls/stocks";
+
+//const emit = defineEmits(['search'])
+
+const emit = defineEmits<{
+    (event: 'search', search: string): void
+}>()
 
 const peraWallet = new PeraWalletConnect();
 const store = useDataStore();
@@ -43,16 +52,24 @@ const store = useDataStore();
 let isExpanded = ref(false);
 let createStockInput : string;
 let iconCreateStock = ref("arrow_right_alt")
+let searchInput = ref("")
 
+
+function animateCreateStock(){
+
+}
 
 function toogle(){
     isExpanded.value = !isExpanded.value
 }
 
+function removeSearch(){
+    searchInput.value = ""
+}
+
 async function createStock() {
     if (store.data.wallet !== "") {
         await addStock(parseInt(createStockInput)).then(response => {
-            console.log("CIAO: " + response)
             toogle()
         }).catch(error => {
             console.log("Oh no: " + error)
@@ -71,13 +88,19 @@ function connectWallet() {
         .connect()
         .then((accounts) => {
             peraWallet.connector?.on("disconnect", disconnectWallet);
+            
             store.changeWallet(accounts[0])
+            console.log(store.data.wallet)
+            
         })
         .catch((e) => console.log(e));
 }
 
 function searchAll() {
-
+    if(searchInput.value !== ""){
+        return emit('search', searchInput.value)
+    }
+    
 }
 
 
@@ -111,6 +134,8 @@ header{
         width: 60%;
     }
     .searchBox {
+        display: flex;
+        justify-content: center;
         position: absolute;
         left: 45%;
         background-color: #3b5998;
@@ -134,6 +159,9 @@ header{
             @media(max-width:1300px){
                 
             }
+        }
+        .removeText{
+            padding-right: 10px;
         }
         .searchInput {
             border:none;
@@ -184,10 +212,12 @@ header{
         width: 7.5%;
         justify-content: center;
         border-radius: 0.5rem;
+        transition: 0.5s;
         button{
             display: flex;
             flex-direction: column;
             align-items: center;
+            
             span{
                 color: white;
             }
@@ -206,7 +236,6 @@ header{
         overflow: hidden;
         .createInput{
             border: 0;
-            margin-left: 5px;
         }
         button{
             background-color: #3b5998;

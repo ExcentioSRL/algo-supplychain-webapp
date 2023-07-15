@@ -22,7 +22,7 @@ export async function deleteRequest(id: string){
     )
 }
 
-export async function createRequest(id: string, owner: string, requester: string){
+export async function createRequest(id: number, owner: string, requester: string){
     return axios.post(
         'http://localhost:3000/requests/createRequest',{id,owner,requester}
     )

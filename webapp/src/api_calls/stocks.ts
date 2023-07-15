@@ -75,4 +75,9 @@ export async function getStocks() {
     )
 }
 
+export async function searchStocks(data : any){
+    return await axios.get(
+        "http://localhost:3000/stocks/searchStocks?data=" + data
+    )
+}
 

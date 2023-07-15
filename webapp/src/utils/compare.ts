@@ -1,16 +1,16 @@
 import { StockClass } from "@/types/stock";
 
 function compareUuid(a: StockClass, b: StockClass): number{
-    if (a.uuid < b.uuid) {
+    if (a.id < b.id) {
         return -1;
     }
-    if (a.uuid > b.uuid) {
+    if (a.id > b.id) {
         return 1;
     }
     return 0;
 }
 
-function compareName(a: StockClass, b: StockClass): number{
+function compareProducer(a: StockClass, b: StockClass): number{
     if (a.producer < b.producer) {
         return -1;
     }
@@ -18,10 +18,10 @@ function compareName(a: StockClass, b: StockClass): number{
         return 1;
     }
 
-    if (a.uuid < b.uuid) {
+    if (a.id < b.id) {
         return -1;
     }
-    if (a.uuid > b.uuid) {
+    if (a.id > b.id) {
         return 1;
     }
     return 0;
@@ -35,16 +35,16 @@ function compareStatus(a: StockClass, b: StockClass): number{
         return 1;
     }
 
-    if (a.uuid < b.uuid) {
+    if (a.id < b.id) {
         return -1;
     }
-    if (a.uuid > b.uuid) {
+    if (a.id > b.id) {
         return 1;
     }
     return 0;
 }
 
-function compareRequesters(a: StockClass, b: StockClass) : number{
+function compareRequester(a: StockClass, b: StockClass) : number{
     if (a.requester !== undefined && b.requester === undefined) {
         return -1;
     }
@@ -62,4 +62,22 @@ function compareRequesters(a: StockClass, b: StockClass) : number{
     return 0;
 }
 
-export{compareName,compareRequesters,compareStatus,compareUuid}
+function compareOwner(a: StockClass, b:StockClass){
+    if (a.owner !== undefined && b.owner === undefined) {
+        return -1;
+    }
+    if (a.owner === undefined && b.owner !== undefined) {
+        return 1;
+    }
+    if (a.owner !== undefined && b.owner !== undefined) {
+        if (a.owner < b.owner) {
+            return -1;
+        }
+        if (a.owner > b.owner) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+export { compareProducer, compareRequester, compareStatus, compareUuid, compareOwner}

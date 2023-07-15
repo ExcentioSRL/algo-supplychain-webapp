@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { StockClass, Status, StockStyle} from "@/types/stock";
+import { StockClass, Status} from "@/types/stock";
 
 const emit = defineEmits(['approveRequest'])
 const props = defineProps({
@@ -24,8 +24,8 @@ const props = defineProps({
         type: Boolean,
         required: true,
     },
-    styling: {
-        type: StockStyle,
+    color: {
+        type: String,
         required: true,
     },
     key: {
@@ -35,9 +35,7 @@ const props = defineProps({
 })
 
 const color_background = props.odd === true ? "white" : "#c9d4e2"
-const color_button =  props.styling?.color_button
-const color_writing =  props.styling?.color_writing
-
+const color =  props.color
 
 function approveRequest(stock : StockClass){
     return emit('approveRequest', stock);
@@ -93,7 +91,7 @@ function generateQRCode() {
          */
     }
     .status{
-        color: v-bind(color_writing);
+        color: v-bind(color);
         left: 55%;
         /*
         @media(max-width:1450px){
@@ -111,7 +109,7 @@ function generateQRCode() {
     }
 
     button{
-        background-color: v-bind(color_button);
+        background-color: v-bind(props);
         color: white;
         border-radius: 5px;
         padding: 0.75rem;

@@ -11,3 +11,9 @@ export async function logout() : Promise<any>{
         "http://localhost:3000/users/logout"
     )
 }
+
+export async function searchUsers(data : any) : Promise<any>{
+    return await axios.get(
+        "http://localhost:3000/users/searchUsers?data=" + data
+    )
+}
