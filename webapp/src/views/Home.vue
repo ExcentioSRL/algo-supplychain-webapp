@@ -18,17 +18,17 @@ import HomepageSearchData from '@/components/HomepageSearchData.vue';
 import type { StockClass } from '@/types/stock';
 import { ref, type Ref } from 'vue';
 
-let searchedStocks : StockClass[] = []
+let searchedStocks : Ref<StockClass[]> = ref([])
 let searchInput : Ref<String> = ref("")
 let key : number = 0
 
 async function handleSearch(data : String){
   searchInput.value = data
-  console.log("qui! " + searchInput.value)
-  /*await searchStocks(searchInput).then(response => {
-    searchedStocks = response.data
-  }) */
-  
+  if(searchInput.value != ""){
+    await searchStocks(searchInput.value).then(response => {
+      searchedStocks = response.data
+    })
+  }
 }
 
 </script>

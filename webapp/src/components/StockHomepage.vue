@@ -109,7 +109,7 @@ function generateQRCode() {
     }
 
     button{
-        background-color: v-bind(props);
+        background-color: v-bind(color);
         color: white;
         border-radius: 5px;
         padding: 0.75rem;

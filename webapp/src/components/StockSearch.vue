@@ -35,9 +35,9 @@ const color_background = props.odd === true ? "white" : "#c9d4e2"
 const color_button = props.stock.status === Status.owned ? "green" : "grey"
 const clickbable_button = props.stock.status === Status.owned ? "pointer" : "default"
 
-function addRequest(stock : StockClass){
+async function addRequest(stock : StockClass){
     if(stock.status === Status.owned){
-        createRequest(stock.id,stock.owner!,store.data.pIva)
+        await createRequest(stock.id,stock.owner!,store.data.pIva)
     }
 }
 </script>

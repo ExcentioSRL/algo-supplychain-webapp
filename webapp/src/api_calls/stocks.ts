@@ -4,12 +4,11 @@ import * as pera from "@perawallet/connect";
 import { useDataStore } from "../stores/store"
 import appspec from '../dApp_schema/application.json'
 import { intToArray, intToArrayv2 } from "@/utils/num_to_array";
-import { type } from "os";
 
 // ------ USA WEB SOCKETS ------ //
 
 let algodClient : any;
-const appID = 256007602;
+const appID = 258591089;
 const contract = new sdk.ABIContract(appspec.contract)
 const addStockMethodSelector = sdk.getMethodByName(contract.methods,"add_stock")
 const changeOwnerMethodSelector = sdk.getMethodByName(contract.methods,"change_owner")
@@ -35,13 +34,15 @@ async function signer(txns: sdk.Transaction[]) {
     return await signTxns(txns)
 }
 
-async function createAndSendTransaction(methodName: sdk.ABIMethod,id: number){
+async function createAndSendTransaction(methodName: sdk.ABIMethod,id: string){
     if (algodClient === undefined) {
         algodClient = createAlgodClient();
     }
     try{
-        let boxName : Uint8Array = new Uint8Array(8);
-        boxName!.set(intToArray(id),1);
+        /*let boxName : Uint8Array = new Uint8Array(8);
+        boxName[0] = id
+        boxName!.set(intToArrayv2(id),0);*/
+        let boxName = new Uint8Array(Buffer.from(id));
         const suggestedParams = await algodClient.getTransactionParams().do()
         const atc = new sdk.AtomicTransactionComposer();
         atc.addMethodCall({
@@ -51,7 +52,7 @@ async function createAndSendTransaction(methodName: sdk.ABIMethod,id: number){
             appID: appID,
             method: methodName,
             methodArgs:[id,store.data.wallet],
-            boxes: [{appIndex: appID,name: boxName!}]
+            boxes: [{appIndex: appID,name: boxName}]
             
         })
         await atc.execute(algodClient, 3)
@@ -61,11 +62,11 @@ async function createAndSendTransaction(methodName: sdk.ABIMethod,id: number){
     }
 }
 
-export async function addStock(id: number) {
+export async function addStock(id: string) {
     return await createAndSendTransaction(addStockMethodSelector,id)
 }
 
-export async function changeOwner(id:number){
+export async function changeOwner(id: string){
     return await createAndSendTransaction(changeOwnerMethodSelector,id)
 }
 

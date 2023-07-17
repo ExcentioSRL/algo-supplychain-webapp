@@ -46,7 +46,9 @@ const emit = defineEmits<{
     (event: 'search', search: string): void
 }>()
 
-const peraWallet = new PeraWalletConnect();
+const peraWallet = new PeraWalletConnect({
+    shouldShowSignTxnToast: false
+});
 const store = useDataStore();
 
 let isExpanded = ref(false);
@@ -65,11 +67,12 @@ function toogle(){
 
 function removeSearch(){
     searchInput.value = ""
+    return emit('search', searchInput.value)
 }
 
 async function createStock() {
     if (store.data.wallet !== "") {
-        await addStock(parseInt(createStockInput)).then(response => {
+        await addStock(createStockInput).then(response => {
             toogle()
         }).catch(error => {
             console.log("Oh no: " + error)
@@ -88,7 +91,7 @@ function connectWallet() {
         .connect()
         .then((accounts) => {
             peraWallet.connector?.on("disconnect", disconnectWallet);
-            
+            console.log("lunghezza: " + accounts.length)
             store.changeWallet(accounts[0])
             console.log(store.data.wallet)
             

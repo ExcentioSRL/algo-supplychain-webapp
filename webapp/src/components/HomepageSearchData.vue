@@ -1,30 +1,30 @@
 <template>
     <main id="homepagesearchdata">
         <h1>Results </h1>
-        <div v-if="stocks !== undefined">
+        <div v-if="stocks?.length !== 0">
             <div class="sortButtons">
                 <button class="sortID" @click="sortStocks('id')">
-                <h2>ID</h2>
-                <span class="material-icons">{{ icon[0] }}</span>
+                    <h2>ID</h2>
+                    <span class="material-icons">{{ icon[0] }}</span>
                 </button>
                 <button class="sortName" @click="sortStocks('producer')">
-                <h2>Owner</h2>
-                <span class="material-icons">{{ icon[1] }}</span>
+                    <h2>Owner</h2>
+                    <span class="material-icons">{{ icon[1] }}</span>
                 </button>
                 <button class="sortStatus" @click="sortStocks('status')">
-                <h2>Producer</h2>
-                <span class="material-icons">{{ icon[2] }}</span>
+                    <h2>Producer</h2>
+                    <span class="material-icons">{{ icon[2] }}</span>
                 </button>
                 <button class="sortRequester" @click="sortStocks('requester')">
-                <h2>Status</h2>
-                <span class="material-icons">{{ icon[3] }}</span>
+                    <h2>Status</h2>
+                    <span class="material-icons">{{ icon[3] }}</span>
                 </button>
                 <form class="search"> 
-                <input class="searchInput" v-model="searchBarInput" type="text" id="query" name="q" placeholder="Search..."  @input="searchMyStocks">
-                <span class="material-icons">search</span>
+                    <input class="searchInput" v-model="searchBarInput" type="text" id="query" name="q" placeholder="Search..."  @input="searchMyStocks">
+                    <span class="material-icons">search</span>
                 </form>
             </div>
-             <div class="allStocks">
+            <div class="allStocks">
                 <div class="stocks" v-for="stock in savedStocksList">
                    <StockSearch :stock=stock :odd="isElementOdd(savedStocksList, stock)" :key="key_stock"/>
                 </div>
@@ -40,9 +40,9 @@
 <script lang="ts" setup>
 import { Status, StockClass } from '@/types/stock';
 import StockSearch from './StockSearch.vue';
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import {compareUuid,compareProducer,compareOwner,compareStatus} from "@/utils/compare";
-//const emit = defineEmits(['prova'])
+
 const props = defineProps({
     stocks: {
         type: Array<StockClass>,
@@ -129,7 +129,7 @@ function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
 
 function searchMyStocks() {
     showedStocksList.value = showedStocksList.value.filter((stock) => {
-        console.log("QUIII " + searchBarInput.value)
+
         if (searchBarInput.value === "") {
             return savedStocksList
         }
@@ -140,6 +140,11 @@ function searchMyStocks() {
     })
     key_stock.value++;
 }
+
+onBeforeMount(() => {
+    savedStocksList.value = props.stocks!
+    showedStocksList.value = savedStocksList.value
+})
 
 </script>
 
