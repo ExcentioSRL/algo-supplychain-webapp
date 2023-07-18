@@ -3,7 +3,6 @@ import axios from 'axios'
 import * as pera from "@perawallet/connect";
 import { useDataStore } from "../stores/store"
 import appspec from '../dApp_schema/application.json'
-import { intToArray, intToArrayv2 } from "@/utils/num_to_array";
 
 // ------ USA WEB SOCKETS ------ //
 
@@ -39,9 +38,6 @@ async function createAndSendTransaction(methodName: sdk.ABIMethod,id: string){
         algodClient = createAlgodClient();
     }
     try{
-        /*let boxName : Uint8Array = new Uint8Array(8);
-        boxName[0] = id
-        boxName!.set(intToArrayv2(id),0);*/
         let boxName = new Uint8Array(Buffer.from(id));
         const suggestedParams = await algodClient.getTransactionParams().do()
         const atc = new sdk.AtomicTransactionComposer();
@@ -68,12 +64,6 @@ export async function addStock(id: string) {
 
 export async function changeOwner(id: string){
     return await createAndSendTransaction(changeOwnerMethodSelector,id)
-}
-
-export async function getStocks() {
-    return await axios.get(
-        "http://localhost:3000/stocks/getStocks?user=" + useDataStore().data.wallet
-    )
 }
 
 export async function searchStocks(data : any){

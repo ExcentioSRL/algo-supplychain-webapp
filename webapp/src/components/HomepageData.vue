@@ -47,7 +47,6 @@
 </template>
 
 <script lang="ts" setup>
-import { getStocks } from "@/api_calls/stocks";
 import Stock from '@/components/StockHomepage.vue';
 import { StockClass, Status } from "@/types/stock";
 import { onBeforeMount, onUnmounted, ref } from "vue";
@@ -214,13 +213,7 @@ function createStockStyle(stock: StockClass): string {
 }
 
 async function getAllStocks() {
-    let myStocks: StockClass[] = savedStocksList.value;
-    if (store.data.wallet !== "") {
-        await getStocks().then(response => {
-            myStocks = response.data
-        })
-    }
-    return myStocks;
+    
 }
 
 
