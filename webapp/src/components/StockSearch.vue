@@ -37,7 +37,9 @@ const clickbable_button = props.stock.status === Status.owned ? "pointer" : "def
 
 async function addRequest(stock : Stock){
     if(stock.status === Status.owned){
-        createRequestSocket(stock.id,stock.owner!,store.data.pIva)
+        createRequestSocket(stock.id,stock.owner!,store.data.pIva).then(response => {
+            
+        })
     }
 }
 </script>
