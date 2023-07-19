@@ -38,14 +38,14 @@
 </template>
 
 <script lang="ts" setup>
-import { Status, StockClass } from '@/types/stock';
+import { Status, Stock } from '@/types/stock';
 import StockSearch from './StockSearch.vue';
 import { onBeforeMount, ref } from 'vue';
 import {compareUuid,compareProducer,compareOwner,compareStatus} from "@/utils/compare";
 
 const props = defineProps({
     stocks: {
-        type: Array<StockClass>,
+        type: Array<Stock>,
         required: false
     },
     searchInput:{
@@ -58,15 +58,8 @@ const props = defineProps({
     }
 })
 
-let showedStocksList = ref<StockClass[]>([])
-let savedStocksList = ref<StockClass[]>([
-    new StockClass(1, "Azienda1 S.r.l", Status.owned, undefined, "Azienda3 S.r.l"),
-    new StockClass(982, "Azienda8 S.r.l", Status.unavailable, undefined, "Azienda1 S.r.l"),
-    new StockClass(33, "Azienda5 S.r.l", Status.unavailable, undefined, "Azienda5 S.r.l"),
-    new StockClass(25, "Azienda1 S.r.l", Status.owned, undefined, "Azienda1 S.r.l"),
-    new StockClass(2, "Azienda3 S.r.l", Status.requested_by, undefined, "Azienda1 S.r.l"),
-    new StockClass(3, "Azienda2 S.r.l", Status.unavailable, undefined, "Azienda3 S.r.l")
-])
+let showedStocksList = ref<Stock[]>([])
+let savedStocksList = ref<Stock[]>([])
 let key_stock = ref(0)
 let searchBarInput = ref("")
 let whichSort = ref("")
@@ -93,8 +86,8 @@ function sortStocks(whichCliked: string) {
             showedStocksList.value.reverse()
         } else {
             changeArrowIcon(3)
-            let stocks1: StockClass[];
-            let stock2: StockClass[];
+            let stocks1: Stock[];
+            let stock2: Stock[];
             stocks1 = showedStocksList.value.filter((stock) => stock.requester !== undefined);
             stocks1.reverse();
             stock2 = showedStocksList.value.filter((stock) => stock.requester === undefined);
@@ -123,7 +116,7 @@ function sortStocks(whichCliked: string) {
     key_stock.value++;
 }
 
-function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
+function isElementOdd(stocks: Stock[], stock: Stock): boolean {
     return stocks.indexOf(stock) % 2 === 0;
 }
 

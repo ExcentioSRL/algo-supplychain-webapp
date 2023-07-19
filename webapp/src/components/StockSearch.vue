@@ -9,14 +9,15 @@
 </template>
 
 <script lang="ts" setup>
-import { createRequest } from '@/api_calls/requests';
+import { createRequestSocket } from '@/api_calls/socket';
 import { useDataStore } from '@/stores/store';
-import { Status, StockClass } from '@/types/stock';
+import { StockRequest } from '@/types/request';
+import { Status, Stock } from '@/types/stock';
 
 //const emit = defineEmits(['approveRequest'])
 const props = defineProps({
     stock: {
-        type: StockClass,
+        type: Stock,
         required: true,
     },
     odd: {
@@ -35,9 +36,9 @@ const color_background = props.odd === true ? "white" : "#c9d4e2"
 const color_button = props.stock.status === Status.owned ? "green" : "grey"
 const clickbable_button = props.stock.status === Status.owned ? "pointer" : "default"
 
-async function addRequest(stock : StockClass){
+async function addRequest(stock : Stock){
     if(stock.status === Status.owned){
-        await createRequest(stock.id,stock.owner!,store.data.pIva)
+        createRequestSocket(new StockRequest(stock.id,stock.owner!,store.data.pIva))
     }
 }
 </script>

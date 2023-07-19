@@ -15,10 +15,10 @@ import { searchStocks } from '@/api_calls/stocks';
 import Header from '@/components/Header.vue';
 import HomepageData from '@/components/HomepageData.vue';
 import HomepageSearchData from '@/components/HomepageSearchData.vue';
-import type { StockClass } from '@/types/stock';
+import type { Stock } from '@/types/stock';
 import { ref, type Ref } from 'vue';
 
-let searchedStocks : Ref<StockClass[]> = ref([])
+let searchedStocks : Ref<Stock[]> = ref([])
 let searchInput : Ref<String> = ref("")
 let key : number = 0
 

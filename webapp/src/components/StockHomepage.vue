@@ -12,12 +12,12 @@
 </template>
 
 <script lang="ts" setup>
-import { StockClass, Status} from "@/types/stock";
+import { Stock, Status} from "@/types/stock";
 
 const emit = defineEmits(['approveRequest'])
 const props = defineProps({
     stock: {
-        type: StockClass,
+        type: Stock,
         required: true,
     },
     odd: {
@@ -37,14 +37,14 @@ const props = defineProps({
 const color_background = props.odd === true ? "white" : "#c9d4e2"
 const color =  props.color
 
-function approveRequest(stock : StockClass){
+function approveRequest(stock : Stock){
     return emit('approveRequest', stock);
     /*
     todo: rimuove la stock dalla pagina
     */
 }
 
-function cancelRequest(stock: StockClass){
+function cancelRequest(stock: Stock){
 
 }
 

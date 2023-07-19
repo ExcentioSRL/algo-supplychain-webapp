@@ -39,6 +39,8 @@ import { PeraWalletConnect } from "@perawallet/connect";
 import { useDataStore } from "@/stores/store";
 import { ref } from "vue";
 import { addStock, searchStocks } from "@/api_calls/stocks";
+import { createStockSocket, walletConnectionSocket } from "@/api_calls/socket";
+import { walletDisconnectionSocket } from "@/api_calls/socket";
 
 //const emit = defineEmits(['search'])
 
@@ -74,6 +76,7 @@ async function createStock() {
     if (store.data.wallet !== "") {
         await addStock(createStockInput).then(response => {
             toogle()
+            createStockSocket(createStockInput)
         }).catch(error => {
             console.log("Oh no: " + error)
         })
@@ -82,8 +85,10 @@ async function createStock() {
 }
 
 function disconnectWallet() {
-    store.changeWallet("")
-    //peraWallet.disconnect().then()
+    peraWallet.disconnect().then(resolve => {
+        store.changeWallet("")
+        walletDisconnectionSocket()
+    })
 }
 
 function connectWallet() {
@@ -91,10 +96,10 @@ function connectWallet() {
         .connect()
         .then((accounts) => {
             peraWallet.connector?.on("disconnect", disconnectWallet);
-            console.log("lunghezza: " + accounts.length)
             store.changeWallet(accounts[0])
-            console.log(store.data.wallet)
-            
+            if(store.data.wallet !== undefined && store.data.wallet !== ""){
+                walletConnectionSocket(store.data.wallet)
+            }
         })
         .catch((e) => console.log(e));
 }

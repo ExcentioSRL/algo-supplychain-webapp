@@ -5,14 +5,14 @@ export enum Status{
     unavailable = "unavailable"
 }
 
-export class StockClass {
-    id: number;
+export class Stock {
+    id: string;
     producer: string;
     status: Status;
     requester? : string;
     owner? : string;
 
-    constructor(id: number, producer: string, status: Status, requester?: string, owner?:string){
+    constructor(id: string, producer: string, status: Status, requester?: string, owner?:string){
         this.id = id;
         this.producer = producer;
         this.status = status;

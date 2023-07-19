@@ -41,27 +41,20 @@
         </div>
       <div class="allStocks">
         <div class="stocks" v-for="stock in showedStocksList">
-           <Stock :stock=stock :odd="isElementOdd(showedStocksList, stock)" :color="createStockStyle(stock)" :key="key_stock" @approveRequest="removeStockFromStocks(stock)"/>
+           <StockHomepage :stock=stock :odd="isElementOdd(showedStocksList, stock)" :color="createStockStyle(stock)" :key="key_stock" @approveRequest="removeStockFromStocks(stock)"/>
         </div>
       </div>
 </template>
 
 <script lang="ts" setup>
-import Stock from '@/components/StockHomepage.vue';
-import { StockClass, Status } from "@/types/stock";
+import StockHomepage from '@/components/StockHomepage.vue';
+import { Stock, Status } from "@/types/stock";
 import { onBeforeMount, onUnmounted, ref } from "vue";
 import { compareProducer, compareStatus, compareUuid, compareRequester } from "@/utils/compare"
 import { useDataStore } from "@/stores/store"
 //data
-let showedStocksList = ref<StockClass[]>([])
-let savedStocksList = ref<StockClass[]>([
-    new StockClass(1, "Azienda1 S.r.l", Status.owned),
-    new StockClass(982, "Azienda8 S.r.l", Status.requested_by, "Azienda3 S.r.l"),
-    new StockClass(33, "Azienda5 S.r.l", Status.requested),
-    new StockClass(25, "Azienda1 S.r.l", Status.owned),
-    new StockClass(2, "Azienda3 S.r.l", Status.requested_by, "Azienda1 S.r.l"),
-    new StockClass(3, "Azienda2 S.r.l", Status.requested_by, "Azienda3 S.r.l")
-])
+let showedStocksList = ref<Stock[]>([])
+let savedStocksList = ref<Stock[]>([])
 let searchBarInput = ref("");
 
 let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
@@ -117,8 +110,8 @@ function sortStocks(whichCliked: string) {
             showedStocksList.value.reverse()
         } else {
             changeArrowIcon(3)
-            let stocks1: StockClass[];
-            let stock2: StockClass[];
+            let stocks1: Stock[];
+            let stock2: Stock[];
             stocks1 = showedStocksList.value.filter((stock) => stock.requester !== undefined);
             stocks1.reverse();
             stock2 = showedStocksList.value.filter((stock) => stock.requester === undefined);
@@ -147,7 +140,7 @@ function sortStocks(whichCliked: string) {
     key_stock.value++;
 }
 
-function isElementOdd(stocks: StockClass[], stock: StockClass): boolean {
+function isElementOdd(stocks: Stock[], stock: Stock): boolean {
     return stocks.indexOf(stock) % 2 === 0;
 }
 
@@ -197,12 +190,12 @@ function changeArrowIcon(whichIcon: number) {
     }
 }
 
-function removeStockFromStocks(stock: StockClass) {
+function removeStockFromStocks(stock: Stock) {
     savedStocksList.value.splice(savedStocksList.value.indexOf(stock), 1);
     key_stock.value++;
 }
 
-function createStockStyle(stock: StockClass): string {
+function createStockStyle(stock: Stock): string {
     if (stock.status === Status.owned) {
         return 'green'
     } else if (stock.status === Status.requested) {
@@ -212,26 +205,7 @@ function createStockStyle(stock: StockClass): string {
     }
 }
 
-async function getAllStocks() {
-    
-}
 
-
-//lifecicle hooks
-onBeforeMount(async () => {
-    let newStocks: StockClass[] = await getAllStocks();
-    interval = setInterval(async () => {
-        newStocks = await getAllStocks();
-        savedStocksList.value = newStocks
-        showedStocksList.value = savedStocksList.value;
-        updateNumbersInFilters()
-        key_stock.value++;
-    }, 5000) //chiamata ogni 5 secondi
-    showedStocksList.value = savedStocksList.value
-})
-onUnmounted(() => {
-    clearInterval(interval);
-})
 </script>
 
 <style lang="scss" scoped>
