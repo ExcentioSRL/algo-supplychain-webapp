@@ -39,15 +39,16 @@ import { PeraWalletConnect } from "@perawallet/connect";
 import { useDataStore } from "@/stores/store";
 import { ref } from "vue";
 import { addStock } from "@/api_calls/stocks";
-import { createStockSocket, walletConnectionSocket } from "@/api_calls/socket";
+import { createStockSocket, searchStocksSocket, walletConnectionSocket } from "@/api_calls/socket";
 import { walletDisconnectionSocket } from "@/api_calls/socket";
 import type { Stock } from "@/types/stock";
 
 //const emit = defineEmits(['search'])
 
 const emit = defineEmits<{
-    (event: 'search', search: string): void
+    (event: 'search_data', search: Stock[]): void
     (event: 'stock_data', data: Stock[]) : void
+    
 }>()
 
 const peraWallet = new PeraWalletConnect({
@@ -71,7 +72,7 @@ function toogle(){
 
 function removeSearch(){
     searchInput.value = ""
-    return emit('search', searchInput.value)
+    return emit('search_data', [])
 }
 
 async function createStock() {
@@ -115,7 +116,10 @@ function connectWallet() {
 
 function searchAll() {
     if(searchInput.value !== ""){
-        return emit('search', searchInput.value)
+        searchStocksSocket(searchInput.value).then(response => {
+            console.log("Lunghezza response search: " + response.length)
+            return emit("search_data",response)
+        })
     }
     
 }

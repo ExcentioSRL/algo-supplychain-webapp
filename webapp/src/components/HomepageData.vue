@@ -215,6 +215,7 @@ onMounted(() => {
   console.log("SIAMO QUI?: " + props.stocks)
   savedStocksList.value = props.stocks
   showedStocksList.value = savedStocksList.value
+  updateNumbersInFilters()
 })
 
 </script>

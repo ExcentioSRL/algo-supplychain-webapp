@@ -48,10 +48,6 @@ const props = defineProps({
         type: Array<Stock>,
         required: false
     },
-    searchInput:{
-        type: String,
-        required: true
-    },
     key: {
         type: Number,
         required: true

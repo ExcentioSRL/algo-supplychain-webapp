@@ -33,3 +33,8 @@ export async function deleteRequestSocket(id: string): Promise<Stock[]>{
     const response = await socket.timeout(5000).emitWithAck("delete_request",id)
     return response
 }
+
+export async function searchStocksSocket(data: string) : Promise<Stock[]>{
+    const response = await socket.timeout(10000).emitWithAck("search_stocks",data)
+    return response 
+}
