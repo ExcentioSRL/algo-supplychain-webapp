@@ -49,9 +49,19 @@
 <script lang="ts" setup>
 import StockHomepage from '@/components/StockHomepage.vue';
 import { Stock, Status } from "@/types/stock";
-import { onBeforeMount, onUnmounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { compareProducer, compareStatus, compareUuid, compareRequester } from "@/utils/compare"
-import { useDataStore } from "@/stores/store"
+
+const props = defineProps({
+  stocks: {
+    type: Array<Stock>,
+    required: true,
+  },
+  key:{
+    type: Number,
+    required: true
+  }
+})
 //data
 let showedStocksList = ref<Stock[]>([])
 let savedStocksList = ref<Stock[]>([])
@@ -67,9 +77,6 @@ let nstocks = ref(savedStocksList.value.filter((stock) => stock.status === Statu
 let nmyrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested).length)
 let nothersrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested_by).length)
 
-let interval: any = null
-const store = useDataStore();
-
 //functions
 function selectFilterColor(n: number) {
     return isSelected.value[n] ? "#3b5998" : "grey"
@@ -77,7 +84,6 @@ function selectFilterColor(n: number) {
 
 function searchMyStocks() {
     showedStocksList.value = showedStocksList.value.filter((stock) => {
-        console.log("QUIII " + searchBarInput.value)
         if (searchBarInput.value === "") {
             return savedStocksList
         }
@@ -205,6 +211,11 @@ function createStockStyle(stock: Stock): string {
     }
 }
 
+onMounted(() => {
+  console.log("SIAMO QUI?: " + props.stocks)
+  savedStocksList.value = props.stocks
+  showedStocksList.value = savedStocksList.value
+})
 
 </script>
 

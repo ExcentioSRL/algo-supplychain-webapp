@@ -1,42 +1,35 @@
 import { io } from "socket.io-client";
-import type { StockRequest } from "@/types/request";
 import type { Stock } from "@/types/stock";
 
 export const socket = io("http://localhost:3000");
 
-
-export function walletConnectionSocket(wallet : string){
+export async function walletConnectionSocket(wallet : string) : Promise<Stock[]>{
     socket.connect()
-    socket.timeout(5000).emit("wallet_connect", wallet, () => {
-
-    })
+    const response = await socket.timeout(5000).emitWithAck("wallet_login", wallet)
+    return response
 }
 
 export function walletDisconnectionSocket(){
-    socket.timeout(5000).emit("wallet_disconnect")
+    socket.timeout(5000).emit("wallet_logout")
     socket.disconnect()
 }
 
-export function createStockSocket(id: string) : Stock[]{
-    socket.timeout(5000).emit("stock_creation",id,() => {
-        //ricevo una nuova lista di stock
-    })
+export async function createStockSocket(id: string): Promise<Stock[]>{
+    const response = await socket.timeout(5000).emitWithAck("stock_creation",id)
+    return response
 }
 
-export function changeStockOwnerSocket(id: string){
-    socket.timeout(5000).emit("stock_change_ownership",id,() => {
-
-    })
+export async function changeStockOwnerSocket(id: string): Promise<Stock[]>{
+    const response = await socket.timeout(5000).emitWithAck("stock_change_ownership",id)
+    return response
 }
 
-export function createRequestSocket(request: StockRequest){
-    socket.timeout(5000).emit("create_request",request,() => {
-
-    })
+export async function createRequestSocket(id: string, oldOwner: string, requester: string): Promise<Stock[]>{
+    const response = await socket.timeout(5000).emitWithAck("create_request",id,oldOwner,requester)
+    return response
 }
 
-export function deleteRequestSocket(request: StockRequest){
-    socket.timeout(5000).emit("delete_request",request,() => {
-
-    })
+export async function deleteRequestSocket(id: string): Promise<Stock[]>{
+    const response = await socket.timeout(5000).emitWithAck("delete_request",id)
+    return response
 }

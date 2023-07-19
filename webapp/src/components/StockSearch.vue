@@ -11,7 +11,6 @@
 <script lang="ts" setup>
 import { createRequestSocket } from '@/api_calls/socket';
 import { useDataStore } from '@/stores/store';
-import { StockRequest } from '@/types/request';
 import { Status, Stock } from '@/types/stock';
 
 //const emit = defineEmits(['approveRequest'])
@@ -38,7 +37,7 @@ const clickbable_button = props.stock.status === Status.owned ? "pointer" : "def
 
 async function addRequest(stock : Stock){
     if(stock.status === Status.owned){
-        createRequestSocket(new StockRequest(stock.id,stock.owner!,store.data.pIva))
+        createRequestSocket(stock.id,stock.owner!,store.data.pIva)
     }
 }
 </script>

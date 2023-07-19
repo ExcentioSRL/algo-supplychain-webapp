@@ -1,11 +1,11 @@
 <template>
 <main id="home">
-  <Header pageName="Homepage" @search="handleSearch"/>
+  <Header pageName="Homepage" @search="handleSearch" @stock_data="handleReceivedData"/>
   <div v-if="searchInput === ''">
-    <HomepageData/>
+    <HomepageData :stocks="homepageStocks" :key="key_2"/>
   </div>
   <div v-else>
-    <HomepageSearchData :stocks="searchedStocks" :searchInput="searchInput.valueOf" :key="key"/>
+    <HomepageSearchData :stocks="searchedStocks" :searchInput="searchInput.valueOf" :key="key_1"/>
   </div>
 </main>
 </template>
@@ -18,10 +18,17 @@ import HomepageSearchData from '@/components/HomepageSearchData.vue';
 import type { Stock } from '@/types/stock';
 import { ref, type Ref } from 'vue';
 
+let homepageStocks : Ref<Stock[]> = ref([])
 let searchedStocks : Ref<Stock[]> = ref([])
 let searchInput : Ref<String> = ref("")
-let key : number = 0
+let key_1: number = 0
+let key_2 : number = 0
 
+function handleReceivedData(data: Stock[]){
+  homepageStocks.value = data
+  console.log("hompage Stocks: "+ homepageStocks.value.length)
+  key_2++;
+}
 async function handleSearch(data : String){
   searchInput.value = data
   if(searchInput.value != ""){

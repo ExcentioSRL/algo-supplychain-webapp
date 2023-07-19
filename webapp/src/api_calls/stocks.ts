@@ -68,7 +68,7 @@ export async function changeOwner(id: string){
 
 export async function searchStocks(data : any){
     return await axios.get(
-        "http://localhost:3000/stocks/searchStocks?data=" + data
+        "http://localhost:8080/stocks/searchStocks?data=" + data
     )
 }
 

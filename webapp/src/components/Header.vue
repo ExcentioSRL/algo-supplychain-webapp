@@ -38,14 +38,16 @@
 import { PeraWalletConnect } from "@perawallet/connect";
 import { useDataStore } from "@/stores/store";
 import { ref } from "vue";
-import { addStock, searchStocks } from "@/api_calls/stocks";
+import { addStock } from "@/api_calls/stocks";
 import { createStockSocket, walletConnectionSocket } from "@/api_calls/socket";
 import { walletDisconnectionSocket } from "@/api_calls/socket";
+import type { Stock } from "@/types/stock";
 
 //const emit = defineEmits(['search'])
 
 const emit = defineEmits<{
     (event: 'search', search: string): void
+    (event: 'stock_data', data: Stock[]) : void
 }>()
 
 const peraWallet = new PeraWalletConnect({
@@ -73,10 +75,14 @@ function removeSearch(){
 }
 
 async function createStock() {
+    let stockList: Stock[] = []
     if (store.data.wallet !== "") {
         await addStock(createStockInput).then(response => {
             toogle()
-            createStockSocket(createStockInput)
+            createStockSocket(createStockInput).then(response => {
+                stockList = response
+                return emit('stock_data', stockList)
+            })
         }).catch(error => {
             console.log("Oh no: " + error)
         })
@@ -92,16 +98,19 @@ function disconnectWallet() {
 }
 
 function connectWallet() {
-    peraWallet
-        .connect()
-        .then((accounts) => {
-            peraWallet.connector?.on("disconnect", disconnectWallet);
-            store.changeWallet(accounts[0])
-            if(store.data.wallet !== undefined && store.data.wallet !== ""){
-                walletConnectionSocket(store.data.wallet)
-            }
-        })
-        .catch((e) => console.log(e));
+    let stockList : Stock[] = []
+    peraWallet.connect().then((accounts) => {
+        peraWallet.connector?.on("disconnect", disconnectWallet);
+        store.changeWallet(accounts[0])
+        if(store.data.wallet !== undefined && store.data.wallet !== ""){
+            walletConnectionSocket(store.data.wallet).then(response => {
+                stockList = response
+                return emit('stock_data', stockList)
+            })
+        }
+    }).catch((e) => console.log(e));
+
+    
 }
 
 function searchAll() {
