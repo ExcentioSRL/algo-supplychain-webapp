@@ -23,9 +23,9 @@ let key_1: number = 0
 let key_2 : number = 0
 
 function handleAllData(data: Stock[],search: Stock[]){
-  handleReceivedData(data)
-  console.log(data.length)
   handleSearch(search)
+  handleReceivedData(data)
+
 }
 
 function handleReceivedData(data: Stock[]){

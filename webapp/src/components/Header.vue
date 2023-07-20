@@ -71,8 +71,9 @@ function removeSearch(){
     let stocks : Stock[] = []
     getStocksSocket().then(response => {
         stocks = response
+        return emit('all_data', stocks, [])
     })
-    return emit('all_data', stocks,[])
+    
 }
 
 async function createStock() {
