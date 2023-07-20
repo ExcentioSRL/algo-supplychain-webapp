@@ -38,3 +38,8 @@ export async function searchStocksSocket(data: string,walletAddress: string) : P
     const response = await socket.timeout(10000).emitWithAck("search_stocks",data,walletAddress)
     return response 
 }
+
+export async function getStocksSocket() : Promise<Stock[]>{
+    const response = await socket.timeout(5000).emitWithAck("get_stocks")
+    return response
+}

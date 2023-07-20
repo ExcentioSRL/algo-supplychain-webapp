@@ -39,7 +39,7 @@ import { PeraWalletConnect } from "@perawallet/connect";
 import { useDataStore } from "@/stores/store";
 import { ref } from "vue";
 import { addStock } from "@/api_calls/stocks";
-import { createStockSocket, searchStocksSocket, walletConnectionSocket } from "@/api_calls/socket";
+import { createStockSocket, searchStocksSocket, walletConnectionSocket,getStocksSocket } from "@/api_calls/socket";
 import { walletDisconnectionSocket } from "@/api_calls/socket";
 import type { Stock } from "@/types/stock";
 
@@ -48,6 +48,7 @@ import type { Stock } from "@/types/stock";
 const emit = defineEmits<{
     (event: 'search_data', search: Stock[]): void
     (event: 'stock_data', data: Stock[]) : void
+    (event: 'all_data',data: Stock[],search: Stock[]) : void
     
 }>()
 
@@ -67,7 +68,11 @@ function toogle(){
 
 function removeSearch(){
     searchInput.value = ""
-    return emit('search_data', [])
+    let stocks : Stock[] = []
+    getStocksSocket().then(response => {
+        stocks = response
+    })
+    return emit('all_data', stocks,[])
 }
 
 async function createStock() {

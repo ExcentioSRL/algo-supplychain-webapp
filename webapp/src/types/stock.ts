@@ -1,3 +1,5 @@
+import type { StockRequest } from "./request";
+
 export enum Status{
     owned = "owned",
     requested = "requested",
@@ -9,14 +11,14 @@ export class Stock {
     id: string;
     producer: string;
     status: Status;
-    requester? : string;
-    owner? : string;
+    owner : string;
+    request?: StockRequest;
 
-    constructor(id: string, producer: string, status: Status, requester?: string, owner?:string){
+    constructor(id: string, producer: string, status: Status, owner:string, request?: StockRequest){
         this.id = id;
         this.producer = producer;
         this.status = status;
-        this.requester = requester;
+        this.request = request;
         this.owner = owner
     }
 }

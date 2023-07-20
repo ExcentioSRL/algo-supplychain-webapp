@@ -1,6 +1,6 @@
 <template>
 <main id="home">
-  <Header pageName="Homepage" @search_data="handleSearch" @stock_data="handleReceivedData"/>
+  <Header pageName="Homepage" @search_data="handleSearch" @stock_data="handleReceivedData" @all_data="handleAllData"/>
   <div v-if="searchedStocks.length === 0">
     <HomepageData :stocks="homepageStocks" :key="key_2"/>
   </div>
@@ -11,7 +11,6 @@
 </template>
 
 <script lang="ts" setup>
-import { searchStocksSocket } from '@/api_calls/socket';
 import Header from '@/components/Header.vue';
 import HomepageData from '@/components/HomepageData.vue';
 import HomepageSearchData from '@/components/HomepageSearchData.vue';
@@ -23,9 +22,14 @@ let searchedStocks : Ref<Stock[]> = ref([])
 let key_1: number = 0
 let key_2 : number = 0
 
+function handleAllData(data: Stock[],search: Stock[]){
+  handleReceivedData(data)
+  console.log(data.length)
+  handleSearch(search)
+}
+
 function handleReceivedData(data: Stock[]){
   homepageStocks.value = data
-  console.log("hompage Stocks: "+ homepageStocks.value.length)
   key_2++;
 }
 function handleSearch(data : Stock[]){

@@ -22,17 +22,21 @@
             <h2>ID</h2>
             <span class="material-icons">{{ icon[0] }}</span>
           </button>
-          <button class="sortName" @click="sortStocks('producer')">
+          <button class="sortProducer" @click="sortStocks('producer')">
             <h2>Producer</h2>
             <span class="material-icons">{{ icon[1] }}</span>
           </button>
+          <button class="sortOwner" @click="sortStocks('owner')">
+            <h2>Owner</h2>
+            <span class="material-icons">{{ icon[2] }}</span>
+          </button>
           <button class="sortStatus" @click="sortStocks('status')">
             <h2>Status</h2>
-            <span class="material-icons">{{ icon[2] }}</span>
+            <span class="material-icons">{{ icon[3] }}</span>
           </button>
           <button class="sortRequester" @click="sortStocks('requester')">
             <h2>Requester</h2>
-            <span class="material-icons">{{ icon[3] }}</span>
+            <span class="material-icons">{{ icon[4] }}</span>
           </button>
           <form class="search"> 
             <input class="searchInput" v-model="searchBarInput" type="text" id="query" name="q" placeholder="Search..."  @input="searchMyStocks">
@@ -41,7 +45,9 @@
         </div>
       <div class="allStocks">
         <div class="stocks" v-for="stock in showedStocksList">
-           <StockHomepage :stock=stock :odd="isElementOdd(showedStocksList, stock)" :color="createStockStyle(stock)" :key="key_stock" @approveRequest="removeStockFromStocks(stock)"/>
+          <StockHomepage 
+            :stock=stock :odd="isElementOdd(showedStocksList, stock)" :color="createStockStyle(stock)" :key="key_stock" 
+            @approveRequest="removeStockFromStocks(stock)" @deleteRequest="removeStockFromStocks(stock)"/>
         </div>
       </div>
 </template>
@@ -70,7 +76,7 @@ let searchBarInput = ref("");
 let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
 let whichSort = ref("")
 let key_stock = ref(0)
-let isSelected = ref([true, false, false, false])
+let isSelected = ref([true, false, false, false,false])
 
 let ntotal = ref(savedStocksList.value.length)
 let nstocks = ref(savedStocksList.value.filter((stock) => stock.status === Status.owned).length)
@@ -90,7 +96,7 @@ function searchMyStocks() {
         return stock.id.toString().includes(searchBarInput.value) ||
             stock.producer.includes(searchBarInput.value) ||
             stock.status.includes(searchBarInput.value) ||
-            stock.requester?.includes(searchBarInput.value)
+            stock.request?.requester?.includes(searchBarInput.value)
     })
     updateNumbersInFilters()
     key_stock.value++;
@@ -118,9 +124,9 @@ function sortStocks(whichCliked: string) {
             changeArrowIcon(3)
             let stocks1: Stock[];
             let stock2: Stock[];
-            stocks1 = showedStocksList.value.filter((stock) => stock.requester !== undefined);
+            stocks1 = showedStocksList.value.filter((stock) => stock.request?.requester !== undefined);
             stocks1.reverse();
-            stock2 = showedStocksList.value.filter((stock) => stock.requester === undefined);
+            stock2 = showedStocksList.value.filter((stock) => stock.request?.requester === undefined);
             showedStocksList.value = stocks1.concat(stock2);
         }
     } else {
@@ -282,24 +288,30 @@ onMounted(() => {
       position: absolute;
       left: 19.5%;
     }
-    .sortName{
+    .sortProducer{
       display: flex;
       flex-direction: row;
       position: absolute;
-      left: 35%;
+      left: 30%;
+    }
+    .sortOwner{
+      display: flex;
+      flex-direction: row;
+      position: absolute;
+      left: 45%;
     }
     .sortStatus{
       display: flex;
       flex-direction: row;
       position: absolute;
-      left: 55%;
+      left: 60%;
     }
 
     .sortRequester{
       display: flex;
       flex-direction: row;
       position: absolute;
-      left: 70%;
+      left: 75%;
     }
     .search{
       display: flex;
