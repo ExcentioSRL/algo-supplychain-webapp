@@ -61,11 +61,6 @@ let createStockInput : string;
 let iconCreateStock = ref("arrow_right_alt")
 let searchInput = ref("")
 
-
-function animateCreateStock(){
-
-}
-
 function toogle(){
     isExpanded.value = !isExpanded.value
 }

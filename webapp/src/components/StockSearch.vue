@@ -3,8 +3,8 @@
         <h4 class="uuid">{{ stock?.id }}</h4>
         <h4 class="producer">{{ stock?.producer }}</h4>
         <h4 class="owner">{{ stock?.owner }}</h4>
-        <h4 class="status">{{ stock?.status }}</h4>
-        <button @click="addRequest(stock)">Create request</button>
+        <h4 class="status">{{ $props.stock.status }}</h4>
+        <button @click="addRequest($props.stock)">Create request</button>
     </div>
 </template>
 
@@ -35,8 +35,9 @@ const color_background = props.odd === true ? "white" : "#c9d4e2"
 const color_button = props.stock.status === Status.owned ? "green" : "grey"
 const clickbable_button = props.stock.status === Status.owned ? "pointer" : "default"
 
-async function addRequest(stock : Stock){
+function addRequest(stock : Stock){
     if(stock.status === Status.owned){
+        console.log("partita IVA: " + store.data.pIva)
         createRequestSocket(stock.id,stock.owner!,store.data.pIva).then(response => {
             
         })

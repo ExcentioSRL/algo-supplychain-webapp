@@ -35,8 +35,9 @@ const response = ref("")
 
 function logMeIn(){
     login(email.value, password.value).then(response => {
-        store.data.nomeAzienda = response.data.nomeAzienda
-        store.data.pIva = response.data.pIva
+        store.changeNomeAzienda(response.data.nomeAzienda)
+        store.changePIVA(response.data.pIva)
+        console.log("LOGIN: " + response.data.pIva)
         router.push('home')
     }).catch(reason => {
         response.value = "Credenziali errate"
