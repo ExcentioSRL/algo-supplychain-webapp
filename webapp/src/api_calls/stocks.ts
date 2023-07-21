@@ -11,6 +11,7 @@ const appID = 258591089;
 const contract = new sdk.ABIContract(appspec.contract)
 const addStockMethodSelector = sdk.getMethodByName(contract.methods,"add_stock")
 const changeOwnerMethodSelector = sdk.getMethodByName(contract.methods,"change_owner")
+//const deleteStockMethodSelector = sdk.getMethodByName(contract.methods,"delete_stock") //ADD THE METHOD
 
 const store = useDataStore()
 const connectPera = new pera.PeraWalletConnect();
@@ -51,7 +52,9 @@ async function createAndSendTransaction(methodName: sdk.ABIMethod,id: string){
             boxes: [{appIndex: appID,name: boxName}]
             
         })
-        await atc.execute(algodClient, 3)
+        
+        const result = await atc.execute(algodClient, 3)
+        console.log("confirmed round: " + result.confirmedRound)
 
     }catch(error){
         console.log("errore: " + error)
@@ -64,6 +67,10 @@ export async function addStock(id: string) {
 
 export async function changeOwner(id: string){
     return await createAndSendTransaction(changeOwnerMethodSelector,id)
+}
+
+export async function deleteStock(id: string){
+    //return await createAndSendTransaction(deleteStockMethodSelector,id)
 }
 
 export async function searchStocks(data : any){

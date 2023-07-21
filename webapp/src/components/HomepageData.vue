@@ -47,7 +47,7 @@
         <div class="stocks" v-for="stock in showedStocksList">
           <StockHomepage 
             :stock=stock :odd="isElementOdd(showedStocksList, stock)" :color="createStockStyle(stock)" :key="key_stock" 
-            @approveRequest="removeStockFromStocks(stock)" @deleteRequest="removeStockFromStocks(stock)"/>
+            @updated_stock_list="updateStocksList"/>
         </div>
       </div>
 </template>
@@ -56,7 +56,7 @@
 import StockHomepage from '@/components/StockHomepage.vue';
 import { Stock, Status } from "@/types/stock";
 import { onMounted, ref } from "vue";
-import { compareProducer, compareStatus, compareUuid, compareRequester } from "@/utils/compare"
+import { compareProducer, compareStatus, compareUuid, compareRequester, compareOwner } from "@/utils/compare"
 
 const props = defineProps({
   stocks: {
@@ -73,7 +73,7 @@ let showedStocksList = ref<Stock[]>([])
 let savedStocksList = ref<Stock[]>([])
 let searchBarInput = ref("");
 
-let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up"])
+let icon = ref(["arrow_drop_up", "arrow_drop_up", "arrow_drop_up", "arrow_drop_up","arrow_drop_up"])
 let whichSort = ref("")
 let key_stock = ref(0)
 let isSelected = ref([true, false, false, false,false])
@@ -120,14 +120,17 @@ function sortStocks(whichCliked: string) {
         } else if (whichCliked === "status") {
             changeArrowIcon(2)
             showedStocksList.value.reverse()
-        } else {
+        } else if (whichCliked === "owner") {
             changeArrowIcon(3)
-            let stocks1: Stock[];
-            let stock2: Stock[];
-            stocks1 = showedStocksList.value.filter((stock) => stock.request?.requester !== undefined);
-            stocks1.reverse();
-            stock2 = showedStocksList.value.filter((stock) => stock.request?.requester === undefined);
-            showedStocksList.value = stocks1.concat(stock2);
+            showedStocksList.value.reverse()
+        }else{
+          changeArrowIcon(4)
+          let stocks1: Stock[];
+          let stock2: Stock[];
+          stocks1 = showedStocksList.value.filter((stock) => stock.request?.requester !== undefined);
+          stocks1.reverse();
+          stock2 = showedStocksList.value.filter((stock) => stock.request?.requester === undefined);
+          showedStocksList.value = stocks1.concat(stock2);
         }
     } else {
         if (whichCliked === "id") {
@@ -142,9 +145,12 @@ function sortStocks(whichCliked: string) {
             showedStocksList.value.sort(compareStatus);
             showedStocksList.value.reverse();
             changeArrowIcon(2)
-        } else {
-            showedStocksList.value.sort(compareRequester);
+        } else if(whichCliked === "owner"){
+            showedStocksList.value.sort(compareOwner);
             changeArrowIcon(3)
+        } else {
+            showedStocksList.value.sort(compareRequester)
+            changeArrowIcon(4)
         }
         whichSort.value = whichCliked;
     }
@@ -165,7 +171,7 @@ function changeShowedList(whichClicked: number) {
             isSelected.value[2] = false
             isSelected.value[3] = false
         }
-            break;
+        break;
         case 1: {
             showedStocksList.value = savedStocksList.value.filter((stock) => stock.status === Status.owned)
             isSelected.value[0] = false
@@ -173,7 +179,7 @@ function changeShowedList(whichClicked: number) {
             isSelected.value[2] = false
             isSelected.value[3] = false
         }
-            break;
+        break;
         case 2: {
             showedStocksList.value = savedStocksList.value.filter((stock) => stock.status === Status.requested)
             isSelected.value[0] = false
@@ -181,7 +187,7 @@ function changeShowedList(whichClicked: number) {
             isSelected.value[2] = true
             isSelected.value[3] = false
         }
-            break;
+        break;
         case 3: {
             showedStocksList.value = savedStocksList.value.filter((stock) => stock.status === Status.requested_by)
             isSelected.value[0] = false
@@ -189,7 +195,7 @@ function changeShowedList(whichClicked: number) {
             isSelected.value[2] = false
             isSelected.value[3] = true
         }
-            break;
+        break;
     }
     key_stock.value++;
 }
@@ -202,9 +208,10 @@ function changeArrowIcon(whichIcon: number) {
     }
 }
 
-function removeStockFromStocks(stock: Stock) {
-    savedStocksList.value.splice(savedStocksList.value.indexOf(stock), 1);
-    key_stock.value++;
+function updateStocksList(data: Stock[]){
+  savedStocksList.value = data
+  showedStocksList.value = savedStocksList.value
+  key_stock.value +=1
 }
 
 function createStockStyle(stock: Stock): string {

@@ -8,27 +8,22 @@
     <h4 class="requester">{{ stock?.request?.requester }}</h4>
     <div class="action-buttons">
         <button class="generate-qr" @click="generateQRCode"><i class="material-icons">qr_code</i></button>
-        <button class="approve-req" @click="approveRequest"><i class="material-icons">done</i></button>
+        <button class="approve-req-change-ownership" @click="approveRequestOrApproveChangeOwnership"><i class="material-icons">done</i></button>
         <button class="cancel-req" @click="cancelRequest"><i class="material-icons">close</i></button>
-        <button class="delete-stock" @click="deleteStock"><i class="material-icons">delete</i></button>
+        <button class="delete-stock" @click="removeStock"><i class="material-icons">delete</i></button>
     </div>
-    <!--<button v-if="stock.status === Status.requested_by" @click="approveRequest(stock)">Handle request</button>
-    <button v-else-if="stock.status === Status.owned" @click="generateQRCode">Generate QR-Code</button>
-    <button v-else @click="cancelRequest(stock)">Cancel request</button>-->
 </div>
 </template>
 
 <script lang="ts" setup> 
-import { deleteRequestSocket } from "@/api_calls/socket";
+import { approveRequestSocket, changeStockOwnerSocket, deleteRequestSocket, generateQRSocket } from "@/api_calls/socket";
+import { changeOwner, deleteStock } from "@/api_calls/stocks";
 import { Stock, Status} from "@/types/stock";
 import { useDataStore } from "@/stores/store";
 
 
 const emit = defineEmits<{
-    (event: 'approveRequest', stock: Stock): void
-    (event: 'deleteRequest', id: Stock): void
-   
-
+    (event: 'updated_stock_list', stocks: Stock[]): void
 }>()
 const props = defineProps({
     stock: {
@@ -57,40 +52,51 @@ const generate_qr_clickable =  props.stock.status === Status.owned || props.stoc
 const delete_stock_color =  props.stock.status === Status.owned || props.stock.status === Status.requested_by ? "#8b0000" : "grey"
 const delete_stock_clickable = props.stock.status === Status.owned  || props.stock.status === Status.requested_by ? "pointer" : "default"
 
-const cancel_or_deny_req_color = props.stock.status === Status.requested || props.stock.status === Status.requested_by ? "red" : "grey" 
-const cancel_or_deny_req_clickable = props.stock.status === Status.requested || props.stock.status === Status.requested_by ? "pointer" : "default"
+const cancel_or_deny_req_color = ( props.stock.status === Status.requested && props.stock.request?.isApproved === false ) || props.stock.status === Status.requested_by ? "red" : "grey" 
+const cancel_or_deny_req_clickable = (props.stock.status === Status.requested && props.stock.request?.isApproved === false) || props.stock.status === Status.requested_by ? "pointer" : "default"
 
-const approve_req_color = props.stock.status === Status.requested_by ? "green" : "grey"
-const approve_req_clickable = props.stock.status === Status.requested_by ? "pointer" : "default"
+const approve_req_color = props.stock.status === Status.requested_by || (props.stock.status === Status.requested && props.stock.request?.isApproved === true) ? "green" : "grey"
+const approve_req_clickable = props.stock.status === Status.requested_by || (props.stock.status === Status.requested && props.stock.request?.isApproved === true) ? "pointer" : "default"
 
 const store = useDataStore()
 
-function deleteStock(){
-    
+function removeStock(){
+    deleteStock(props.stock.id)
+    if(props.stock.status === Status.requested_by){
+       deleteRequestSocket(props.stock.id).then(response => {
+            return emit('updated_stock_list', response)
+        }) 
+    }
 }
 
-function approveRequest(){
-    //createRequestSocket(stock.id,stock.owner!,store.data.pIVA)
-    return emit('approveRequest', props.stock);
-    /*
-    todo: rimuove la stock dalla pagina
-    */
+async function approveRequestOrApproveChangeOwnership(){
+    if(props.stock.status === Status.requested_by){
+        approveRequestSocket(props.stock.id).then(response => {
+            return emit('updated_stock_list', response);
+        })
+    }else{
+        await changeOwner(props.stock.id).then(res => {
+            console.log("CIAO!")
+            changeStockOwnerSocket(props.stock.id).then(response => {
+                console.log("QUI: " + response.length)
+                return emit('updated_stock_list', response);
+            })
+        })
+        
+    }
+    
 }
 
 function cancelRequest(){
     deleteRequestSocket(props.stock.id).then(response => {
-        return emit('deleteRequest',props.stock)
+        return emit('updated_stock_list',response)
     })
 }
 
 function generateQRCode() {
-    //todo
-    if (props.stock?.status === Status.owned) {
-        console.log("stock:")
-        console.log("uuid:" + props.stock?.id)
-        console.log("producer:" + props.stock?.producer)
-        console.log("status:" + props.stock?.status)
-    }
+    generateQRSocket().then(response => {
+        //it returns the list of owners until that moment
+    })
 }
 </script>
 
@@ -158,7 +164,7 @@ function generateQRCode() {
             color: v-bind(generate_qr_color);
             cursor: v-bind(generate_qr_clickable);
         }
-        .approve-req{
+        .approve-req-change-ownership{
             color: v-bind(approve_req_color);
             cursor: v-bind(approve_req_clickable);
         }

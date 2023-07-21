@@ -29,6 +29,11 @@ export async function createRequestSocket(id: string, oldOwner: string, requeste
     return response
 }
 
+export async function approveRequestSocket(id: string){
+    const response = await socket.timeout(5000).emitWithAck("approve_request",id)
+    return response;
+}
+
 export async function deleteRequestSocket(id: string): Promise<Stock[]>{
     const response = await socket.timeout(5000).emitWithAck("delete_request",id)
     return response
@@ -42,4 +47,9 @@ export async function searchStocksSocket(data: string,walletAddress: string) : P
 export async function getStocksSocket() : Promise<Stock[]>{
     const response = await socket.timeout(5000).emitWithAck("get_stocks")
     return response
+}
+
+export async function generateQRSocket(){
+    const response = await socket.timeout(5000).emitWithAck('generate_qr')
+    return response;
 }
