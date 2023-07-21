@@ -118,7 +118,6 @@ function connectWallet() {
 function searchAll() {
     if(searchInput.value !== ""){
         searchStocksSocket(searchInput.value,store.data.wallet).then(response => {
-            console.log("Lunghezza response search: " + response.length)
             return emit("search_data",response)
         })
     }
