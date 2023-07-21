@@ -211,7 +211,7 @@ function changeArrowIcon(whichIcon: number) {
 function updateStocksList(data: Stock[]){
   savedStocksList.value = data
   showedStocksList.value = savedStocksList.value
-  key_stock.value +=1
+  key_stock.value += 1
 }
 
 function createStockStyle(stock: Stock): string {

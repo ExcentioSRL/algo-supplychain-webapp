@@ -4,7 +4,8 @@
         <h4 class="producer">{{ stock?.producer }}</h4>
         <h4 class="owner">{{ stock?.owner }}</h4>
         <h4 class="status">{{ $props.stock.status }}</h4>
-        <button @click="addRequest($props.stock)">Create request</button>
+        <button v-if="props.stock.status === Status.owned" @click="addRequest($props.stock)">Create request</button>
+        <button v-else>Unavailable</button>    
     </div>
 </template>
 
