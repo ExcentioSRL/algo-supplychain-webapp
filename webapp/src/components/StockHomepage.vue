@@ -7,7 +7,7 @@
     <h4 class="status">{{ stock?.status }}</h4>
     <h4 class="requester">{{ stock?.request?.requester }}</h4>
     <div class="action-buttons">
-        <button class="generate-qr" @click="generateQRCode"><i class="material-icons">qr_code</i></button>
+        <button class="generate-qr" @click="generateQRCode" @download="generateQRCode"><i class="material-icons">qr_code</i></button>
         <button class="approve-req-change-ownership" @click="approveRequestOrApproveChangeOwnership"><i class="material-icons">done</i></button>
         <button class="cancel-req" @click="cancelRequest"><i class="material-icons">close</i></button>
         <button class="delete-stock" @click="removeStock"><i class="material-icons">delete</i></button>
@@ -20,8 +20,10 @@ import { approveRequestSocket, changeStockOwnerSocket, deleteRequestSocket, dele
 import { changeOwner, deleteStock } from "@/api_calls/stocks";
 import { Stock, Status} from "@/types/stock";
 import { useDataStore } from "@/stores/store";
-import QRCode from "qrcode-generator";
- 
+import QRCode from "qrcode";
+import {PDFDocument,rgb} from "pdf-lib"
+import fs from "fs"
+
 const emit = defineEmits<{
     (event: 'updated_stock_list', stocks: Stock[]): void
 }>()
@@ -93,25 +95,49 @@ function cancelRequest(){
 
 function generateQRCode() {
     getStockHistorySocket(props.stock.id).then(response => {
-        console.log("IL TIPO: " + typeof(response))
-        console.log("LA LUNGHEZZA: " + response.length)
-        const qr_type = QRCode(4,"H")
-        qr_type.addData(response.toString()) //.data ????
-        qr_type.make()
-        const qr = qr_type.createImgTag()
-        console.log("Siamo QUA!")
-        //downloadQRImage(qr)
-    });
+        downloadAsPdf(JSON.stringify(response)) //JSON.stringify(response)
+    })    
 }
 
-function downloadQRImage(qr: any){
-    const blob = new Blob(qr,{type: "application/pdf"}) //image
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = "Download QR"
-    link.click()
-    URL.revokeObjectURL(link.href)
-    console.log("Siamo QUI!")
+async function generateQRCodeData(text : string) {
+   const qrCodeDataUrl = await QRCode.toDataURL(text);
+    return qrCodeDataUrl.split(',')[1];
+}
+
+async function createPdfWithQRCode(qrCodeData : any) {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([400, 400]);
+    console.log("QUA!")
+    const qrCodeImage = await pdfDoc.embedPng(Buffer.from(qrCodeData, 'base64'));
+    console.log("QUA2")
+    const { width, height } = page.getSize();
+    const x = 50;
+    const y = height - 350;
+    const qrCodeSize = 300;
+
+    page.drawImage(qrCodeImage, {
+        x,
+        y,
+        width: qrCodeSize,
+        height: qrCodeSize,
+    });
+    console.log("QUIIII 2")
+    return await pdfDoc.save();
+}
+
+async function downloadAsPdf(qrCodeText : string) {
+    const qrCodeData = await generateQRCodeData(qrCodeText);
+    const pdfBytes = await createPdfWithQRCode(qrCodeData);
+
+    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const downloadLink = URL.createObjectURL(pdfBlob);
+
+    const a = document.createElement('a');
+    a.href = downloadLink;
+    a.download = 'qrcode.pdf';
+    a.click();
+
+    URL.revokeObjectURL(downloadLink);
 }
 </script>
 

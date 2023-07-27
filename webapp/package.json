@@ -18,6 +18,7 @@
     "@perawallet/connect": "^1.2.3",
     "@vueuse/core": "^10.2.0",
     "algosdk": "^2.4.0",
+    "pdf-lib": "^1.17.1",
     "pinia": "^2.0.36",
     "pinia-plugin-persistedstate": "^3.1.0",
     "qrcode-generator": "^1.4.4",
