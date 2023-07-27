@@ -42,13 +42,16 @@
 <script lang="ts" setup>
 import {useDataStore} from "@/stores/store"
 import {logout} from "@/api_calls/users"
+import { walletDisconnectionSocket } from "@/api_calls/socket";
 
 const store = useDataStore();
 
 async function logMeOut() {
     store.deleteAllData()
-    logout().then(response => {
-
+    logout().then(async response => {
+        await walletDisconnectionSocket().then(res => {
+            
+        })
     })
 }
 </script>

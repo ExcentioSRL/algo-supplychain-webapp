@@ -1,17 +1,15 @@
 import * as sdk from "algosdk"
-import axios from 'axios'
 import * as pera from "@perawallet/connect";
 import { useDataStore } from "../stores/store"
 import appspec from '../dApp_schema/application.json'
 
-// ------ USA WEB SOCKETS ------ //
 
 let algodClient : any;
-const appID = 258591089;
+const appID = 264415535;
 const contract = new sdk.ABIContract(appspec.contract)
 const addStockMethodSelector = sdk.getMethodByName(contract.methods,"add_stock")
 const changeOwnerMethodSelector = sdk.getMethodByName(contract.methods,"change_owner")
-//const deleteStockMethodSelector = sdk.getMethodByName(contract.methods,"delete_stock") //ADD THE METHOD
+const deleteStockMethodSelector = sdk.getMethodByName(contract.methods,"delete_stock") //ADD THE METHOD
 
 const store = useDataStore()
 const connectPera = new pera.PeraWalletConnect();
@@ -34,11 +32,12 @@ async function signer(txns: sdk.Transaction[]) {
     return await signTxns(txns)
 }
 
-async function createAndSendTransaction(methodName: sdk.ABIMethod,id: string){
+
+export async function addStock(id: string) {
     if (algodClient === undefined) {
         algodClient = createAlgodClient();
     }
-    try{
+    try {
         let boxName = new Uint8Array(Buffer.from(id));
         const suggestedParams = await algodClient.getTransactionParams().do()
         const atc = new sdk.AtomicTransactionComposer();
@@ -47,35 +46,65 @@ async function createAndSendTransaction(methodName: sdk.ABIMethod,id: string){
             sender: store.data.wallet,
             signer: signer,
             appID: appID,
-            method: methodName,
-            methodArgs:[id,store.data.wallet],
-            boxes: [{appIndex: appID,name: boxName}]
-            
+            method: addStockMethodSelector,
+            methodArgs: [id, store.data.wallet],
+            boxes: [{ appIndex: appID, name: boxName }],
+            note: boxName
+
         })
-        
+
         const result = await atc.execute(algodClient, 3)
         console.log("confirmed round: " + result.confirmedRound)
-
+        return result
     }catch(error){
-        console.log("errore: " + error)
+        console.log("Something went wrong with addStock")
     }
 }
 
-export async function addStock(id: string) {
-    return await createAndSendTransaction(addStockMethodSelector,id)
-}
-
 export async function changeOwner(id: string){
-    return await createAndSendTransaction(changeOwnerMethodSelector,id)
+    if (algodClient === undefined) {
+        algodClient = createAlgodClient();
+    }
+    let boxName = new Uint8Array(Buffer.from(id));
+    const suggestedParams = await algodClient.getTransactionParams().do()
+    const atc = new sdk.AtomicTransactionComposer();
+    atc.addMethodCall({
+        suggestedParams,
+        sender: store.data.wallet,
+        signer: signer,
+        appID: appID,
+        method: changeOwnerMethodSelector,
+        methodArgs: [id, store.data.wallet],
+        boxes: [{ appIndex: appID, name: boxName }],
+        note: boxName
+
+    })
+
+    const result = await atc.execute(algodClient, 3)
+    console.log("confirmed round: " + result.confirmedRound)
 }
 
 export async function deleteStock(id: string){
-    //return await createAndSendTransaction(deleteStockMethodSelector,id)
-}
+    if (algodClient === undefined) {
+        algodClient = createAlgodClient();
+    }
+    let boxName = new Uint8Array(Buffer.from(id));
+    const suggestedParams = await algodClient.getTransactionParams().do()
+    const atc = new sdk.AtomicTransactionComposer();
+    atc.addMethodCall({
+        suggestedParams,
+        sender: store.data.wallet,
+        signer: signer,
+        appID: appID,
+        method: deleteStockMethodSelector,
+        methodArgs: [id],
+        boxes: [{ appIndex: appID, name: boxName }],
+        note: boxName
 
-export async function searchStocks(data : any){
-    return await axios.get(
-        "http://localhost:8080/stocks/searchStocks?data=" + data
-    )
+    })
+
+    const result = await atc.execute(algodClient, 3)
+    console.log("confirmed round: " + result.confirmedRound)
+    return result;
 }
 

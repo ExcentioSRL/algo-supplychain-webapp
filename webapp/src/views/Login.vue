@@ -37,7 +37,6 @@ function logMeIn(){
     login(email.value, password.value).then(response => {
         store.changeNomeAzienda(response.data.nomeAzienda)
         store.changePIVA(response.data.pIva)
-        console.log("LOGIN: " + response.data.pIva)
         router.push('home')
     }).catch(reason => {
         response.value = "Credenziali errate"
@@ -48,8 +47,8 @@ function logMeIn(){
 <style lang="scss" scoped>
 #login {
     background: linear-gradient(90deg, #3b5998, #d1d8cc);
-    width: 100vw;
-    height: 100vh;
+    overflow: hidden;
+    height: 75.5%;
     padding-top: 15rem;
     padding-left: 23rem;
     .main-part {

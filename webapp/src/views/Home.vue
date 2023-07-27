@@ -15,8 +15,11 @@ import Header from '@/components/Header.vue';
 import HomepageData from '@/components/HomepageData.vue';
 import HomepageSearchData from '@/components/HomepageSearchData.vue';
 import type { Stock } from '@/types/stock';
-import { ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
+import { useDataStore } from '@/stores/store';
+import { getStocksSocket } from '@/api_calls/socket';
 
+const store = useDataStore()
 let homepageStocks : Ref<Stock[]> = ref([])
 let searchedStocks : Ref<Stock[]> = ref([])
 let key_1: number = 0
@@ -36,6 +39,15 @@ function handleSearch(data : Stock[]){
   searchedStocks.value = data
   key_1++;
 }
+
+onMounted( () => {
+  if(store.data.wallet !== ""){
+    console.log("prv")
+    getStocksSocket().then(response => {
+      handleReceivedData(response)
+    })
+  }
+})
 
 </script>
 

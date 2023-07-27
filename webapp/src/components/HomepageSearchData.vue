@@ -7,15 +7,15 @@
                     <h2>ID</h2>
                     <span class="material-icons">{{ icon[0] }}</span>
                 </button>
-                <button class="sortName" @click="sortStocks('producer')">
-                    <h2>Owner</h2>
+                <button class="sortProducer" @click="sortStocks('producer')">
+                    <h2>Producer</h2>
                     <span class="material-icons">{{ icon[1] }}</span>
                 </button>
-                <button class="sortStatus" @click="sortStocks('status')">
-                    <h2>Producer</h2>
+                <button class="sortOwner" @click="sortStocks('owner')">
+                    <h2>Owner</h2>
                     <span class="material-icons">{{ icon[2] }}</span>
                 </button>
-                <button class="sortRequester" @click="sortStocks('requester')">
+                <button class="sortStatus" @click="sortStocks('status')">
                     <h2>Status</h2>
                     <span class="material-icons">{{ icon[3] }}</span>
                 </button>
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Status, Stock } from '@/types/stock';
+import { Stock } from '@/types/stock';
 import StockSearch from './StockSearch.vue';
 import { onBeforeMount, ref } from 'vue';
 import {compareUuid,compareProducer,compareOwner,compareStatus} from "@/utils/compare";
@@ -84,9 +84,9 @@ function sortStocks(whichCliked: string) {
             changeArrowIcon(3)
             let stocks1: Stock[];
             let stock2: Stock[];
-            stocks1 = showedStocksList.value.filter((stock) => stock.requester !== undefined);
+            stocks1 = showedStocksList.value.filter((stock) => stock.request?.requester !== undefined);
             stocks1.reverse();
-            stock2 = showedStocksList.value.filter((stock) => stock.requester === undefined);
+            stock2 = showedStocksList.value.filter((stock) => stock.request?.requester === undefined);
             showedStocksList.value = stocks1.concat(stock2);
         }
     } else {
@@ -125,7 +125,7 @@ function searchMyStocks() {
         return stock.id.toString().includes(searchBarInput.value) ||
             stock.producer.includes(searchBarInput.value) ||
             stock.status.includes(searchBarInput.value) ||
-            stock.requester?.includes(searchBarInput.value)
+            stock.request?.requester.includes(searchBarInput.value)
     })
     key_stock.value++;
 }
@@ -161,20 +161,20 @@ onBeforeMount(() => {
         position: absolute;
         left: 19.5%;
         }
-        .sortName{
+        .sortProducer{
         display: flex;
         flex-direction: row;
         position: absolute;
         left: 35%;
         }
-        .sortStatus{
+        .sortOwner{
         display: flex;
         flex-direction: row;
         position: absolute;
         left: 55%;
         }
 
-        .sortRequester{
+        .sortStatus{
         display: flex;
         flex-direction: row;
         position: absolute;

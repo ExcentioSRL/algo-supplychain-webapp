@@ -9,8 +9,8 @@ export async function walletConnectionSocket(wallet : string) : Promise<Stock[]>
     return response
 }
 
-export function walletDisconnectionSocket(){
-    socket.timeout(5000).emit("wallet_logout")
+export async function walletDisconnectionSocket(){
+    const response = await socket.timeout(5000).emitWithAck("wallet_logout")
     socket.disconnect()
 }
 
@@ -21,6 +21,11 @@ export async function createStockSocket(id: string): Promise<Stock[]>{
 
 export async function changeStockOwnerSocket(id: string): Promise<Stock[]>{
     const response = await socket.timeout(5000).emitWithAck("stock_change_ownership",id)
+    return response
+}
+
+export async function deleteStockSocket(id: string) : Promise<Stock[]>{
+    const response = await socket.timeout(5000).emitWithAck("delete_stock",id)
     return response
 }
 
@@ -49,7 +54,7 @@ export async function getStocksSocket() : Promise<Stock[]>{
     return response
 }
 
-export async function generateQRSocket(){
-    const response = await socket.timeout(5000).emitWithAck('generate_qr')
+export async function getStockHistorySocket(id: string){
+    const response : Array<string> = await socket.timeout(5000).emitWithAck('get_stock_history',id)
     return response;
 }

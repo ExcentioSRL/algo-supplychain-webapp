@@ -16,12 +16,12 @@
 </template>
 
 <script lang="ts" setup> 
-import { approveRequestSocket, changeStockOwnerSocket, deleteRequestSocket, generateQRSocket } from "@/api_calls/socket";
+import { approveRequestSocket, changeStockOwnerSocket, deleteRequestSocket, deleteStockSocket, getStockHistorySocket } from "@/api_calls/socket";
 import { changeOwner, deleteStock } from "@/api_calls/stocks";
 import { Stock, Status} from "@/types/stock";
 import { useDataStore } from "@/stores/store";
-
-
+import QRCode from "qrcode-generator";
+ 
 const emit = defineEmits<{
     (event: 'updated_stock_list', stocks: Stock[]): void
 }>()
@@ -61,12 +61,14 @@ const approve_req_clickable = props.stock.status === Status.requested_by || (pro
 const store = useDataStore()
 
 function removeStock(){
-    deleteStock(props.stock.id)
-    if(props.stock.status === Status.requested_by){
-       deleteRequestSocket(props.stock.id).then(response => {
-            return emit('updated_stock_list', response)
-        }) 
+    if(props.stock.status !== Status.requested){
+        deleteStock(props.stock.id).then(res => {
+            deleteStockSocket(props.stock.id).then(response => {
+                return emit('updated_stock_list', response);
+            })
+        })
     }
+    
 }
 
 async function approveRequestOrApproveChangeOwnership(){
@@ -76,15 +78,11 @@ async function approveRequestOrApproveChangeOwnership(){
         })
     }else{
         await changeOwner(props.stock.id).then(res => {
-            console.log("CIAO!")
             changeStockOwnerSocket(props.stock.id).then(response => {
-                console.log("QUI: " + response.length)
                 return emit('updated_stock_list', response);
             })
-        })
-        
+        })   
     }
-    
 }
 
 function cancelRequest(){
@@ -94,9 +92,26 @@ function cancelRequest(){
 }
 
 function generateQRCode() {
-    generateQRSocket().then(response => {
-        //it returns the list of owners until that moment
-    })
+    getStockHistorySocket(props.stock.id).then(response => {
+        console.log("IL TIPO: " + typeof(response))
+        console.log("LA LUNGHEZZA: " + response.length)
+        const qr_type = QRCode(4,"H")
+        qr_type.addData(response.toString()) //.data ????
+        qr_type.make()
+        const qr = qr_type.createImgTag()
+        console.log("Siamo QUA!")
+        //downloadQRImage(qr)
+    });
+}
+
+function downloadQRImage(qr: any){
+    const blob = new Blob(qr,{type: "application/pdf"}) //image
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = "Download QR"
+    link.click()
+    URL.revokeObjectURL(link.href)
+    console.log("Siamo QUI!")
 }
 </script>
 
@@ -114,7 +129,6 @@ function generateQRCode() {
         position: absolute;
         font-weight: 500;
         padding-top: 0.25rem;
-
     }
     .uuid{
        left: 19%; 
@@ -176,18 +190,6 @@ function generateQRCode() {
             color: v-bind(delete_stock_color);
             cursor: v-bind(delete_stock_clickable);
         }
-        
-       /* button{
-        background-color: v-bind(color);
-        color: white;
-        border-radius: 5px;
-        padding: 0.75rem;
-        width: 10rem;
-        position: absolute;
-        left: 87%;
-        cursor: pointer;
-        } */
     }
-    
 }
 </style>

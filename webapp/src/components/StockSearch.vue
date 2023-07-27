@@ -3,7 +3,7 @@
         <h4 class="uuid">{{ stock?.id }}</h4>
         <h4 class="producer">{{ stock?.producer }}</h4>
         <h4 class="owner">{{ stock?.owner }}</h4>
-        <h4 class="status">{{ $props.stock.status }}</h4>
+        <h4 class="status">{{ status }}</h4>
         <button v-if="props.stock.status === Status.owned" @click="addRequest($props.stock)">Create request</button>
         <button v-else>Unavailable</button>    
     </div>
@@ -32,6 +32,7 @@ const props = defineProps({
 
 const store = useDataStore();
 
+const status = props.stock.status === Status.owned ? "available" : Status.unavailable
 const color_background = props.odd === true ? "white" : "#c9d4e2"
 const color_button = props.stock.status === Status.owned ? "green" : "grey"
 const clickbable_button = props.stock.status === Status.owned ? "pointer" : "default"

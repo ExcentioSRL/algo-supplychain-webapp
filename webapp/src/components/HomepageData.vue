@@ -2,19 +2,19 @@
     <div class="filters">
         <button class="all" @click="changeShowedList(0)">
           <h3>All</h3>
-          <h3>{{ ntotal }}</h3>
+          <h3>{{ n_total }}</h3>
         </button>
         <button class="stocks" @click="changeShowedList(1)">
           <h3>My Stocks</h3>
-          <h3>{{ nstocks }}</h3>
+          <h3>{{ n_stocks }}</h3>
         </button>
         <button class="my-requests" @click="changeShowedList(2)">
           <h3>My Requests</h3>
-          <h3>{{ nmyrequests }}</h3>
+          <h3>{{ n_myrequests }}</h3>
         </button>
         <button class="others-requests" @click="changeShowedList(3)">
           <h3>Others Requests</h3>
-          <h3>{{ nothersrequests }}</h3>
+          <h3>{{ n_othersrequests }}</h3>
         </button>
       </div>
       <div class="sortButtons">
@@ -78,10 +78,10 @@ let whichSort = ref("")
 let key_stock = ref(0)
 let isSelected = ref([true, false, false, false,false])
 
-let ntotal = ref(savedStocksList.value.length)
-let nstocks = ref(savedStocksList.value.filter((stock) => stock.status === Status.owned).length)
-let nmyrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested).length)
-let nothersrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested_by).length)
+let n_total = ref(savedStocksList.value.length)
+let n_stocks = ref(savedStocksList.value.filter((stock) => stock.status === Status.owned).length)
+let n_myrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested).length)
+let n_othersrequests = ref(savedStocksList.value.filter((stock) => stock.status === Status.requested_by).length)
 
 //functions
 function selectFilterColor(n: number) {
@@ -103,10 +103,10 @@ function searchMyStocks() {
 }
 
 function updateNumbersInFilters() {
-    ntotal = ref(showedStocksList.value.length)
-    nstocks = ref(showedStocksList.value.filter((stock) => stock.status === Status.owned).length)
-    nmyrequests = ref(showedStocksList.value.filter((stock) => stock.status === Status.requested).length)
-    nothersrequests = ref(showedStocksList.value.filter((stock) => stock.status === Status.requested_by).length)
+    n_total = ref(showedStocksList.value.length)
+    n_stocks = ref(showedStocksList.value.filter((stock) => stock.status === Status.owned).length)
+    n_myrequests = ref(showedStocksList.value.filter((stock) => stock.status === Status.requested).length)
+    n_othersrequests = ref(showedStocksList.value.filter((stock) => stock.status === Status.requested_by).length)
 }
 
 function sortStocks(whichCliked: string) {
@@ -212,6 +212,7 @@ function updateStocksList(data: Stock[]){
   savedStocksList.value = data
   showedStocksList.value = savedStocksList.value
   key_stock.value += 1
+  updateNumbersInFilters()
 }
 
 function createStockStyle(stock: Stock): string {
