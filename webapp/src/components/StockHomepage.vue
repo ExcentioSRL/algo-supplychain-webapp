@@ -95,7 +95,7 @@ function cancelRequest(){
 
 function generateQRCode() {
     getStockHistorySocket(props.stock.id).then(response => {
-        downloadAsPdf(JSON.stringify(response)) //JSON.stringify(response)
+        downloadAsPdf(JSON.stringify(response)) 
     })    
 }
 
@@ -107,9 +107,7 @@ async function generateQRCodeData(text : string) {
 async function createPdfWithQRCode(qrCodeData : any) {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([400, 400]);
-    console.log("QUA!")
     const qrCodeImage = await pdfDoc.embedPng(Buffer.from(qrCodeData, 'base64'));
-    console.log("QUA2")
     const { width, height } = page.getSize();
     const x = 50;
     const y = height - 350;

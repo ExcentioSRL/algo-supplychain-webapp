@@ -50,9 +50,7 @@ export async function addStock(id: string) {
             methodArgs: [id, store.data.wallet],
             boxes: [{ appIndex: appID, name: boxName }],
             note: boxName
-
         })
-
         const result = await atc.execute(algodClient, 3)
         console.log("confirmed round: " + result.confirmedRound)
         return result
@@ -77,9 +75,7 @@ export async function changeOwner(id: string){
         methodArgs: [id, store.data.wallet],
         boxes: [{ appIndex: appID, name: boxName }],
         note: boxName
-
     })
-
     const result = await atc.execute(algodClient, 3)
     console.log("confirmed round: " + result.confirmedRound)
 }

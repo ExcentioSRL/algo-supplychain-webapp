@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import type { Stock } from "@/types/stock";
+import type { Stock, StockHistory } from "@/types/stock";
 
 export const socket = io("http://localhost:3000");
 
@@ -55,6 +55,6 @@ export async function getStocksSocket() : Promise<Stock[]>{
 }
 
 export async function getStockHistorySocket(id: string){
-    const response : Array<string> = await socket.timeout(5000).emitWithAck('get_stock_history',id)
+    const response : StockHistory = await socket.timeout(5000).emitWithAck('get_stock_history',id)
     return response;
 }

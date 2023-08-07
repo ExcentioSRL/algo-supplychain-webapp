@@ -22,3 +22,15 @@ export class Stock {
         this.owner = owner
     }
 }
+
+export class StockHistory {
+    id: string;
+    historyNames: Array<string>
+    historyWallets: Array<string>
+
+    constructor(id: string, historyNames: Array<string>, historyWallets: Array<string>) {
+        this.id = id;
+        this.historyNames = historyNames;
+        this.historyWallets = historyWallets;
+    }
+}
